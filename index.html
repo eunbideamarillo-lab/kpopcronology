@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K-POP Archive Hub & Fandom Zone (2019 - Presente)</title>
+    <title>K-POP Archive Hub, Fandom Zone & HD Wallpapers</title>
 
     <!-- Código oficial de Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6836041116623012"
@@ -281,7 +281,66 @@
             color: var(--text-main);
         }
 
-        /* Sección TikTok */
+        /* Wallpapers Section Styles */
+        .wallpaper-card {
+            background: var(--bg-card);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .wallpaper-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-yellow);
+        }
+
+        .wallpaper-img-container {
+            width: 100%;
+            height: 250px;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .wallpaper-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .wallpaper-card:hover .wallpaper-img-container img {
+            transform: scale(1.05);
+        }
+
+        .wallpaper-info {
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .btn-download-monetized {
+            background: linear-gradient(45deg, var(--accent-yellow), #ff8c00);
+            color: #000;
+            text-align: center;
+            text-decoration: none;
+            padding: 0.6rem;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            transition: opacity 0.2s;
+            display: block;
+        }
+
+        .btn-download-monetized:hover {
+            opacity: 0.9;
+        }
+
+        /* TikTok Section */
         .tiktok-header-card {
             background: linear-gradient(135deg, rgba(255,0,80,0.15), rgba(0,242,254,0.15));
             border: 1px solid rgba(0,242,254,0.3);
@@ -346,14 +405,6 @@
             gap: 1rem;
         }
 
-        .tiktok-embed-container {
-            width: 100%;
-            border-radius: 8px;
-            overflow: hidden;
-            background: #000;
-            min-height: 400px;
-        }
-
         /* Fandom Zone Views */
         .fandom-container {
             display: grid;
@@ -408,7 +459,7 @@
         /* Modal Forms */
         .modal {
             display: none;
-            position fixed;
+            position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.85);
             justify-content: center;
@@ -452,6 +503,7 @@
 
         <div class="nav-tabs">
             <button class="nav-btn active" id="tabArchiveBtn" onclick="switchTab('archive')">📺 Catálogo K-Pop</button>
+            <button class="nav-btn" id="tabWallpapersBtn" onclick="switchTab('wallpapers')">🖼️ Wallpapers HD</button>
             <button class="nav-btn" id="tabFandomBtn" onclick="switchTab('fandom')">👑 Fandom Zone</button>
             <button class="nav-btn tiktok-tab" id="tabTiktokBtn" onclick="switchTab('tiktok')">🎵 TikTok (@eduardgi07)</button>
         </div>
@@ -497,6 +549,15 @@
                 </select>
             </div>
         </div>
+
+        <div id="wallpaperFilterSection" style="display: none;">
+            <div class="filter-group">
+                <label>Filtrar Wallpaper por Grupo</label>
+                <select id="wallpaperGroupFilter" onchange="renderWallpapers()">
+                    <option value="ALL">Todos los Grupos Registrados</option>
+                </select>
+            </div>
+        </div>
     </aside>
 
     <!-- Área Principal -->
@@ -516,6 +577,17 @@
         <div class="content-area" id="archiveView">
             <div class="grid-layout" id="gridContent">
                 <!-- Tarjetas dinámicas -->
+            </div>
+        </div>
+
+        <!-- Vista Wallpapers HD -->
+        <div class="content-area" id="wallpapersView" style="display: none;">
+            <div style="margin-bottom: 1.5rem; background: var(--bg-secondary); padding: 1.2rem; border-radius: 10px; border: 1px solid var(--border-color);">
+                <h2 style="color: var(--accent-yellow); font-size: 1.3rem; margin-bottom: 0.3rem;">🖼️ K-Pop Wallpapers HD (4K & Mobile)</h2>
+                <p style="color: var(--text-muted); font-size: 0.85rem;">Galería HD con 10 wallpapers dedicados para cada grupo. Haz clic en "Descargar HD" para acceder al enlace de alta velocidad.</p>
+            </div>
+            <div class="grid-layout" id="wallpaperGrid">
+                <!-- Wallpapers dinámicos -->
             </div>
         </div>
 
@@ -607,11 +679,9 @@
     <script async src="https://www.tiktok.com/embed.js"></script>
 
     <script>
-        // Lista de TikToks
-        let tiktokVideos = [
-            { id: "1", title: "TikTok Destacado 1", videoId: "7345678901234567890" },
-            { id: "2", title: "TikTok Destacado 2", videoId: "7345678901234567891" }
-        ];
+        // URL Base para acortadores monetizados (ejemplo: Adsterra/Monetag Direct Link o Bitly/Adfly)
+        // Puedes cambiar esta variable por tu enlace directo monetizado
+        const MONETIZED_LINK_BASE = "https://www.tiktok.com/@eduardgi07";
 
         // Base de Datos K-Pop
         let archiveData = [
@@ -655,19 +725,85 @@
 
         function switchTab(tab) {
             document.getElementById('archiveView').style.display = tab === 'archive' ? 'block' : 'none';
+            document.getElementById('wallpapersView').style.display = tab === 'wallpapers' ? 'block' : 'none';
             document.getElementById('fandomView').style.display = tab === 'fandom' ? 'block' : 'none';
             document.getElementById('tiktokView').style.display = tab === 'tiktok' ? 'block' : 'none';
+            
             document.getElementById('filterSection').style.display = tab === 'archive' ? 'block' : 'none';
+            document.getElementById('wallpaperFilterSection').style.display = tab === 'wallpapers' ? 'block' : 'none';
 
             document.getElementById('tabArchiveBtn').classList.toggle('active', tab === 'archive');
+            document.getElementById('tabWallpapersBtn').classList.toggle('active', tab === 'wallpapers');
             document.getElementById('tabFandomBtn').classList.toggle('active', tab === 'fandom');
             document.getElementById('tabTiktokBtn').classList.toggle('active', tab === 'tiktok');
 
-            if (tab === 'fandom') {
+            if (tab === 'wallpapers') {
+                populateWallpaperSelect();
+                renderWallpapers();
+            } else if (tab === 'fandom') {
                 renderFandomZone();
             } else if (tab === 'tiktok') {
                 renderTiktokSection();
             }
+        }
+
+        // Generación Automática de Wallpapers HD para los grupos registrados
+        function generateWallpapers() {
+            const wallpapers = [];
+            const uniqueArtists = [...new Set(archiveData.map(item => item.artist))];
+
+            uniqueArtists.forEach((artist, artistIdx) => {
+                for (let i = 1; i <= 10; i++) {
+                    const seed = encodeURIComponent(`${artist}-${i}`);
+                    const imgUrl = `https://picsum.photos/seed/${seed}/800/1200`;
+                    wallpapers.push({
+                        id: `wp-${artistIdx}-${i}`,
+                        artist: artist,
+                        title: `${artist} HD Wallpaper #${i}`,
+                        resolution: "4K UHD / Mobile",
+                        imgUrl: imgUrl,
+                        downloadUrl: `${MONETIZED_LINK_BASE}?wp=${encodeURIComponent(artist)}_${i}`
+                    });
+                }
+            });
+            return wallpapers;
+        }
+
+        function populateWallpaperSelect() {
+            const select = document.getElementById('wallpaperGroupFilter');
+            const uniqueArtists = [...new Set(archiveData.map(item => item.artist))];
+            select.innerHTML = '<option value="ALL">Todos los Grupos Registrados</option>';
+            uniqueArtists.forEach(artist => {
+                select.innerHTML += `<option value="${artist}">${artist}</option>`;
+            });
+        }
+
+        function renderWallpapers() {
+            const grid = document.getElementById('wallpaperGrid');
+            const selectedArtist = document.getElementById('wallpaperGroupFilter').value;
+            const allWallpapers = generateWallpapers();
+
+            const filtered = selectedArtist === 'ALL' 
+                ? allWallpapers 
+                : allWallpapers.filter(w => w.artist === selectedArtist);
+
+            grid.innerHTML = '';
+            filtered.forEach(wp => {
+                grid.innerHTML += `
+                    <div class="wallpaper-card">
+                        <div class="wallpaper-img-container">
+                            <img src="${wp.imgUrl}" alt="${wp.title}" loading="lazy">
+                        </div>
+                        <div class="wallpaper-info">
+                            <div style="font-weight: bold; font-size: 0.95rem;">${wp.artist}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">${wp.title} • ${wp.resolution}</div>
+                            <a href="${wp.downloadUrl}" target="_blank" rel="noopener noreferrer" class="btn-download-monetized">
+                                ⬇️ Descargar HD
+                            </a>
+                        </div>
+                    </div>
+                `;
+            });
         }
 
         function renderTiktokSection() {
