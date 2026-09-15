@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K-POP Archive Hub & Fandom Zone (2019 - 2026)</title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6836041116623012"
+         crossorigin="anonymous"></script>
+
+    <style>
+        :root {
+            --bg-primary: #0a0b10;
+            --bg-secondary: #13151f;
+            --bg-card: #1c1f2e;
+            --accent-pink: #ff2a74;
+            --accent-purple: #8a2be2;
+            --accent-blue: #00d2ff;
+            --accent-yellow: #ffb703;
+            --accent-green: #00e676;
+            --text-main: #f0f2f8;
+            --text-muted: #a0a5ba;
+            --border-color: #2e334d;
+            --card-hover-shadow: 0 10px 25px rgba(255, 42, 116, 0.25);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar & Filters */
+        aside {
+            width: 310px;
+            background-color: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem 1.2rem;
+            overflow-y: auto;
+            flex-shrink: 0;
+            z-index: 10;
+            transition: transform 0.3s ease;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent-pink), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+        }
+
+        .logo i {
+            color: var(--accent-pink);
+            -webkit-text-fill-color: initial;
+        }
+
+        .app-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            background: rgba(0,0,0,0.3);
+            padding: 0.4rem;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 0.6rem 0.4rem;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-weight: 700;
+            font-size: 0.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            transition: all 0.25s ease;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
+            color: white;
+            box-shadow: 0 4px 12px rgba(255, 42, 116, 0.3);
+        }
+
+        .filter-group {
+            margin-bottom: 1.1rem;
+        }
+
+        .filter-group label {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.4rem;
+            font-weight: 700;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 0.8rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .filter-group select, .filter-group input {
+            width: 100%;
+            padding: 0.7rem 0.8rem 0.7rem 2.2rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            border-radius: 8px;
+            outline: none;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+        }
+
+        .filter-group select:focus, .filter-group input:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 10px rgba(0, 210, 255, 0.2);
+        }
+
+        .filter-group select option {
+            background: var(--bg-secondary);
+            color: var(--text-main);
+        }
+
+        .sidebar-actions {
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn-reset, .btn-secondary-sm {
+            background: transparent;
+            border: 1px dashed var(--border-color);
+            color: var(--text-muted);
+            padding: 0.6rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .btn-reset:hover { border-color: var(--accent-pink); color: var(--accent-pink); }
+        .btn-secondary-sm:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        header {
+            background: var(--bg-secondary);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .mobile-toggle {
+            display: none;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 0.6rem 0.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            align-items: center;
+        }
+
+        .stats-bar span {
+            color: var(--accent-blue);
+            font-weight: bold;
+        }
+
+        .actions-bar {
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+        }
+
+        .btn {
+            border: none;
+            padding: 0.65rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            transition: all 0.25s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-add {
+            background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 42, 116, 0.3);
+        }
+
+        .btn-add:hover {
+            opacity: 0.95;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 42, 116, 0.5);
+        }
+
+        .btn-deploy {
+            background: rgba(0, 210, 255, 0.15);
+            border: 1px solid var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        .btn-deploy:hover {
+            background: var(--accent-blue);
+            color: #000;
+        }
+
+        .view-section {
+            display: none;
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        /* Video Cards Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+            gap: 1.8rem;
+            align-content: start;
+        }
+
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: var(--border-color);
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            border-color: var(--accent-pink);
+            box-shadow: var(--card-hover-shadow);
+        }
+
+        .thumbnail-wrapper {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            background: #000;
+            overflow: hidden;
+        }
+
+        .thumbnail-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .card-info {
+            padding: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            flex: 1;
+        }
+
+        .badge-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .badge {
+            font-size: 0.65rem;
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-debut { background: rgba(255, 42, 116, 0.15); color: var(--accent-pink); border: 1px solid rgba(255, 42, 116, 0.4); }
+        .badge-comeback { background: rgba(138, 43, 226, 0.15); color: var(--accent-purple); border: 1px solid rgba(138, 43, 226, 0.4); }
+        .badge-stage { background: rgba(0, 210, 255, 0.15); color: var(--accent-blue); border: 1px solid rgba(0, 210, 255, 0.4); }
+        .badge-cat { background: rgba(255, 183, 3, 0.15); color: var(--accent-yellow); border: 1px solid rgba(255, 183, 3, 0.4); }
+        .badge-year { background: rgba(255, 255, 255, 0.08); color: var(--text-main); border: 1px solid var(--border-color); }
+
+        .card-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            line-height: 1.35;
+            color: var(--text-main);
+        }
+
+        .card-artist {
+            color: var(--accent-blue);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .card-meta {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: auto;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0.3rem 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+        }
+
+        .action-btn:hover.edit-btn { color: var(--accent-blue); background: rgba(0,210,255,0.1); }
+        .action-btn:hover.delete-btn { color: var(--accent-pink); background: rgba(255,42,116,0.1); }
+
+        /* Fandom Zone Styling */
+        .fandom-header {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 2.5rem auto;
+        }
+
+        .fandom-header h2 {
+            font-size: 2.2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent-pink), var(--accent-yellow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .fandom-header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .fandom-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .poll-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            padding: 1.8rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .poll-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.8rem;
+        }
+
+        .poll-title i { color: var(--accent-pink); }
+
+        .poll-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex: 1;
+        }
+
+        .poll-item {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 0.9rem 1.1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+
+        .poll-item:hover { border-color: var(--accent-blue); }
+
+        .poll-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 2;
+        }
+
+        .poll-item-name {
+            font-weight: 700;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .rank-badge {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--border-color);
+            color: white;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+        }
+
+        .rank-1 { background: linear-gradient(135deg, #ffd700, #ff8c00); color: #000; }
+        .rank-2 { background: linear-gradient(135deg, #c0c0c0, #7f8c8d); color: #000; }
+        .rank-3 { background: linear-gradient(135deg, #cd7f32, #8b4513); color: #fff; }
+
+        .vote-btn {
+            background: rgba(255, 42, 116, 0.15);
+            border: 1px solid var(--accent-pink);
+            color: var(--accent-pink);
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .vote-btn:hover {
+            background: var(--accent-pink);
+            color: white;
+            box-shadow: 0 0 10px rgba(255, 42, 116, 0.4);
+        }
+
+        .progress-bar-container {
+            height: 6px;
+            background: var(--bg-card);
+            border-radius: 3px;
+            overflow: hidden;
+            width: 100%;
+            z-index: 2;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-pink), var(--accent-blue));
+            border-radius: 3px;
+            transition: width 0.4s ease;
+        }
+
+        .vote-count {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-align: right;
+            z-index: 2;
+        }
+
+        /* Modal Dialogs */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(6px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 1rem;
+        }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 550px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--accent-pink), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .close-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .close-btn:hover { color: var(--accent-pink); }
+
+        .form-control { margin-bottom: 1.2rem; }
+
+        .form-control label {
+            display: block;
+            font-size: 0.8rem;
+            margin-bottom: 0.4rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .form-control input, .form-control select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: white;
+            border-radius: 8px;
+            outline: none;
+            font-size: 0.9rem;
+        }
+
+        .form-control input:focus, .form-control select:focus { border-color: var(--accent-pink); }
+
+        .form-hint {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.3rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        /* Deployment Step List */
+        .deploy-steps {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .deploy-steps li {
+            background: var(--bg-card);
+            padding: 1rem;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            gap: 0.8rem;
+            align-items: flex-start;
+        }
+
+        .step-num {
+            background: var(--accent-purple);
+            color: white;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .step-text strong { color: var(--accent-blue); }
+
+        /* Custom Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--accent-green);
+            color: var(--text-main);
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            z-index: 2000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            aside {
+                position: fixed;
+                left: -100%;
+                top: 0;
+                height: 100%;
+                width: 280px;
+                box-shadow: 5px 0 25px rgba(0,0,0,0.5);
+            }
+            aside.active { left: 0; }
+            .mobile-toggle { display: block; }
+            .view-section { padding: 1rem; }
+            header { padding: 0.8rem 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar / Navigation & Dynamic Filters -->
+    <aside id="sidebar">
+        <div class="logo">
+            <i class="fa-solid fa-compact-disc fa-spin" style="--fa-animation-duration: 8s;"></i>
+            <span>K-ARCHIVE</span>
+        </div>
+        
+        <div class="app-tabs">
+            <button class="tab-btn active" id="tabArchive" onclick="switchView('archive')">
+                <i class="fa-solid fa-tv"></i> Archivo
+            </button>
+            <button class="tab-btn" id="tabFandom" onclick="switchView('fandom')">
+                <i class="fa-solid fa-fire"></i> Fandom Zone
+            </button>
+        </div>
+
+        <div id="filterSection">
+            <div class="filter-group">
+                <label>Buscar Artista / Canción</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="searchInput" placeholder="Ej: ZEROBASEONE, ILLIT, Stray Kids..." oninput="filterData()">
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label>Categoría</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-users"></i>
+                    <select id="categoryFilter" onchange="filterData()">
+                        <option value="ALL">Todas las Categorías</option>
+                        <option value="Boy Group">Boy Group</option>
+                        <option value="Girl Group">Girl Group</option>
+                        <option value="Soloist">Solista</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label>Año (2019 - 2026)</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    <select id="yearFilter" onchange="filterData()">
+                        <option value="ALL">Todos los años</option>
+                        <option value="2026">2026</option>
+                        <option value="2025">2025</option>
+                        <option value="2024">2024</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
+                        <option value="2021">2021</option>
+                        <option value="2020">2020</option>
+                        <option value="2019">2019</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label>Tipo de Evento</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-clapperboard"></i>
+                    <select id="typeFilter" onchange="filterData()">
+                        <option value="ALL">Todos los tipos</option>
+                        <option value="Debut">Debut</option>
+                        <option value="Comeback">Comeback</option>
+                        <option value="Stage">Stage Performance</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn-reset" onclick="resetFilters()">
+                <i class="fa-solid fa-rotate-left"></i> Restablecer Filtros
+            </button>
+        </div>
+
+        <div class="sidebar-actions">
+            <button class="btn-secondary-sm" onclick="exportJSON()">
+                <i class="fa-solid fa-download"></i> Exportar Copia JSON
+            </button>
+            <button class="btn-secondary-sm" onclick="triggerImport()">
+                <i class="fa-solid fa-upload"></i> Importar Backup
+            </button>
+            <input type="file" id="importInput" style="display:none;" accept=".json" onchange="importJSON(event)">
+        </div>
+    </aside>
+
+    <!-- Main View Structure -->
+    <main>
+        <header>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <button class="mobile-toggle" onclick="toggleSidebar()">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="stats-bar">
+                    <p><i class="fa-solid fa-video" style="color:var(--accent-pink);"></i> Mostrando: <span id="totalCount">0</span> lanzamientos</p>
+                </div>
+            </div>
+            
+            <div class="actions-bar">
+                <button class="btn btn-deploy" onclick="openDeployModal()">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> ¿Cómo subir a internet?
+                </button>
+                <button class="btn btn-add" onclick="openModal()">
+                    <i class="fa-solid fa-plus"></i> Registrar Video
+                </button>
+            </div>
+        </header>
+
+        <!-- View 1: Archive Hub Grid -->
+        <section class="view-section active" id="archiveView">
+            <div class="content-grid" id="gridContent">
+                <!-- Dynamic Video Cards Render Here -->
+            </div>
+        </section>
+
+        <!-- View 2: Fandom Zone -->
+        <section class="view-section" id="fandomView">
+            <div class="fandom-header">
+                <h2><i class="fa-solid fa-crown"></i> FANDOM ZONE</h2>
+                <p>¡Apoya a tus grupos e Idols favoritos! Vota por los mejores videos y tus artistas preferidos de la era 2019-2026.</p>
+            </div>
+
+            <div class="fandom-grid">
+                <!-- Poll 1: Favorite Video of the Year -->
+                <div class="poll-card">
+                    <div class="poll-title">
+                        <i class="fa-solid fa-trophy"></i>
+                        <span>Video Favorito (2019-2026)</span>
+                    </div>
+                    <div class="poll-list" id="videoPollList"></div>
+                </div>
+
+                <!-- Poll 2: Favorite Idol / Group -->
+                <div class="poll-card">
+                    <div class="poll-title">
+                        <i class="fa-solid fa-heart"></i>
+                        <span>Grupo / Idol Favorito</span>
+                    </div>
+                    <div class="poll-list" id="idolPollList"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal 1: Add/Edit Entry Form -->
+    <div class="modal" id="addModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Agregar Registro K-Pop</h2>
+                <button class="close-btn" onclick="closeModal('addModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="kpopForm" onsubmit="saveEntry(event)">
+                <input type="hidden" id="editId">
+                <div class="form-control">
+                    <label>Nombre del Grupo / Solista</label>
+                    <input type="text" id="artistInput" required placeholder="Ej: ZEROBASEONE, ILLIT, Stray Kids">
+                </div>
+                <div class="form-control">
+                    <label>Título de la Canción / Stage</label>
+                    <input type="text" id="titleInput" required placeholder="Ej: Magnetic, In Bloom, Chk Chk Boom">
+                </div>
+                <div class="form-control">
+                    <label>Categoría</label>
+                    <select id="categoryInput">
+                        <option value="Girl Group">Girl Group</option>
+                        <option value="Boy Group">Boy Group</option>
+                        <option value="Soloist">Solista</option>
+                    </select>
+                </div>
+                <div class="form-control">
+                    <label>Tipo de Evento</label>
+                    <select id="typeInput">
+                        <option value="Debut">Debut</option>
+                        <option value="Comeback">Comeback</option>
+                        <option value="Stage">Stage Performance</option>
+                    </select>
+                </div>
+                <div class="form-control">
+                    <label>Fecha de Lanzamiento</label>
+                    <input type="date" id="dateInput" required>
+                </div>
+                <div class="form-control">
+                    <label>ID del Video de YouTube</label>
+                    <input type="text" id="ytIdInput" required placeholder="Ej: Vk5-c_v4gMU">
+                    <p class="form-hint">Introduce el código único de la URL (Ejemplo: youtube.com/watch?v=<b>Vk5-c_v4gMU</b>)</p>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary-sm" style="width:auto;" onclick="closeModal('addModal')">Cancelar</button>
+                    <button type="submit" class="btn btn-add">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 2: Deployment Guide -->
+    <div class="modal" id="deployModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fa-solid fa-rocket"></i> Guía: Cómo Subir a Internet Gratis</h2>
+                <button class="close-btn" onclick="closeModal('deployModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:1.5rem;">
+                Dado que esta aplicación está empaquetada en un solo archivo <code>index.html</code>, publicarla en la web gratis toma solo un par de minutos:
+            </p>
+            <ul class="deploy-steps">
+                <li>
+                    <div class="step-num">1</div>
+                    <div class="step-text">
+                        <strong>Opción A: Netlify Drop (Más Fácil)</strong><br>
+                        Entra a <u>app.netlify.com/drop</u>. Arrastra y suelta la carpeta donde guardes este archivo <code>index.html</code>. Obtendrás un enlace público al instante.
+                    </div>
+                </li>
+                <li>
+                    <div class="step-num">2</div>
+                    <div class="step-text">
+                        <strong>Opción B: GitHub Pages</strong><br>
+                        Crea un repositorio público en GitHub, sube este archivo con el nombre <code>index.html</code> y activa <em>GitHub Pages</em> en las opciones del proyecto.
+                    </div>
+                </li>
+                <li>
+                    <div class="step-num">3</div>
+                    <div class="step-text">
+                        <strong>Opción C: Vercel</strong><br>
+                        Sube tu archivo a GitHub o usa la CLI de Vercel con el comando <code>vercel deploy</code>. Es instantáneo y totalmente gratuito.
+                    </div>
+                </li>
+            </ul>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-add" onclick="closeModal('deployModal')">¡Entendido!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fa-solid fa-circle-check" style="color:var(--accent-green); font-size: 1.2rem;"></i>
+        <span id="toastMsg">Operación realizada con éxito</span>
+    </div>
+
+    <script>
+        const defaultArchive = [
+            // --- 2026 DEBUTS & EMERGENCE ---
+            { id: 2601, artist: "NEXZ", title: "Ride the Vibe", category: "Boy Group", type: "Debut", date: "2026-01-15", ytId: "9o4S1XvVlS8" },
+            { id: 2602, artist: "VIVID", title: "Sparkling Stars", category: "Girl Group", type: "Debut", date: "2026-02-10", ytId: "3m3v3_8W3pA" },
+
+            // --- 2025 DEBUTS & HIGHLIGHTS ---
+            { id: 2501, artist: "MEOVV", title: "MEOW", category: "Girl Group", type: "Debut", date: "2025-09-06", ytId: "x0W82R1vMUk" },
+            { id: 2502, artist: "izna", title: "IZNA", category: "Girl Group", type: "Debut", date: "2025-11-25", ytId: "3GWscde8rM8" },
+            { id: 2503, artist: "naevis", title: "Done", category: "Soloist", type: "Debut", date: "2025-09-10", ytId: "ZeerrnuLi5E" },
+
+            // --- 2024 DEBUTS & COMEBACKS ---
+            { id: 2401, artist: "ILLIT", title: "Magnetic", category: "Girl Group", type: "Debut", date: "2024-03-25", ytId: "Vk5-c_v4gMU" },
+            { id: 2402, artist: "TWS", title: "Plot Twist", category: "Boy Group", type: "Debut", date: "2024-01-22", ytId: "hVAc1Vf2ITU" },
+            { id: 2403, artist: "BABYMONSTER", title: "SHEESH", category: "Girl Group", type: "Debut", date: "2024-04-01", ytId: "2wA_b6z38u8" },
+            { id: 2404, artist: "NCT WISH", title: "WISH", category: "Boy Group", type: "Debut", date: "2024-02-28", ytId: "hw8S8L6s8vU" },
+            { id: 2405, artist: "RESCENE", title: "UhUh", category: "Girl Group", type: "Debut", date: "2024-03-26", ytId: "cM9OpX_u48o" },
+            { id: 2406, artist: "KATSEYE", title: "Touch", category: "Girl Group", type: "Debut", date: "2024-07-26", ytId: "bNKXxnJ3E5Y" },
+            { id: 2407, artist: "BADVILLAIN", title: "BADVILLAIN", category: "Girl Group", type: "Debut", date: "2024-06-03", ytId: "4_Y5V3_g3eI" },
+            { id: 2408, artist: "ARTMS", title: "Virtual Angel", category: "Girl Group", type: "Debut", date: "2024-05-31", ytId: "q1k_OAtx30A" },
+            { id: 2409, artist: "Stray Kids", title: "Chk Chk Boom", category: "Boy Group", type: "Comeback", date: "2024-07-19", ytId: "0P0aQpm6qgo" },
+            { id: 2410, artist: "aespa", title: "Supernova", category: "Girl Group", type: "Comeback", date: "2024-05-13", ytId: "phuiAIKAU7A" },
+
+            // --- 2023 DEBUTS & HITS ---
+            { id: 2301, artist: "ZEROBASEONE", title: "In Bloom", category: "Boy Group", type: "Debut", date: "2023-07-10", ytId: "trI91no4P9U" },
+            { id: 2302, artist: "RIIZE", title: "Get A Guitar", category: "Boy Group", type: "Debut", date: "2023-09-04", ytId: "iS2i15qWn-8" },
+            { id: 2303, artist: "BOYNEXTDOOR", title: "One and Only", category: "Boy Group", type: "Debut", date: "2023-05-30", ytId: "jT3_C_fS_M0" },
+            { id: 2304, artist: "KISS OF LIFE", title: "Shh", category: "Girl Group", type: "Debut", date: "2023-07-05", ytId: "f4XG9U7V2pM" },
+            { id: 2305, artist: "xikers", title: "TRICKY HOUSE", category: "Boy Group", type: "Debut", date: "2023-03-30", ytId: "yH8Z5fJ31zY" },
+            { id: 2306, artist: "tripleS", title: "Rising", category: "Girl Group", type: "Debut", date: "2023-02-13", ytId: "8ly4x-B3mXk" },
+            { id: 2307, artist: "Loossemble", title: "Sensitive", category: "Girl Group", type: "Debut", date: "2023-09-15", ytId: "2v3X_P3yJ3c" },
+
+            // --- 2022 DEBUTS & HITS ---
+            { id: 2201, artist: "NewJeans", title: "Attention", category: "Girl Group", type: "Debut", date: "2022-07-22", ytId: "js1CtxSY38I" },
+            { id: 2202, artist: "LE SSERAFIM", title: "FEARLESS", category: "Girl Group", type: "Debut", date: "2022-05-02", ytId: "4vbDFu0PUew" },
+            { id: 2203, artist: "NMIXX", title: "O.O", category: "Girl Group", type: "Debut", date: "2022-02-22", ytId: "3GWscde8rM8" },
+            { id: 2204, artist: "Kep1er", title: "WA DA DA", category: "Girl Group", type: "Debut", date: "2022-01-03", ytId: "I9y8Oa9fIuM" },
+            { id: 2205, artist: "VIVIZ", title: "BOP BOP!", category: "Girl Group", type: "Debut", date: "2022-02-09", ytId: "cM9OpX_u48o" },
+            { id: 2206, artist: "Stray Kids", title: "MANIAC", category: "Boy Group", type: "Comeback", date: "2022-03-18", ytId: "OvioeS1ZZ7o" },
+
+            // --- 2021 DEBUTS & HITS ---
+            { id: 2101, artist: "IVE", title: "ELEVEN", category: "Girl Group", type: "Debut", date: "2021-12-01", ytId: "_Pkh8Wv1C5A" },
+            { id: 2102, artist: "BILLLIE", title: "RING X RING", category: "Girl Group", type: "Debut", date: "2021-11-10", ytId: "3m3v3_8W3pA" },
+            { id: 2103, artist: "LIGHTSUM", title: "Vanilla", category: "Girl Group", type: "Debut", date: "2021-06-10", ytId: "2v3X_P3yJ3c" },
+            { id: 2104, artist: "TRI.BE", title: "DOOM DOOM TA", category: "Girl Group", type: "Debut", date: "2021-02-17", ytId: "2v3X_P3yJ3c" },
+
+            // --- 2020 DEBUTS & HITS ---
+            { id: 2001, artist: "aespa", title: "Black Mamba", category: "Girl Group", type: "Debut", date: "2020-11-17", ytId: "ZeerrnuLi5E" },
+            { id: 2002, artist: "ENHYPEN", title: "Given-Taken", category: "Boy Group", type: "Debut", date: "2020-11-30", ytId: "nQ6wLuYvGd4" },
+            { id: 2003, artist: "STAYC", title: "SO BAD", category: "Girl Group", type: "Debut", date: "2020-11-12", ytId: "g6qXy0m6Wsc" },
+            { id: 2004, artist: "TREASURE", title: "BOY", category: "Boy Group", type: "Debut", date: "2020-08-07", ytId: "J_UB7LY8OKs" },
+            { id: 2005, artist: "BTS", title: "Dynamite", category: "Boy Group", type: "Comeback", date: "2020-08-21", ytId: "gdZLi9oWNZg" },
+
+            // --- 2019 DEBUTS ---
+            { id: 1901, artist: "ITZY", title: "DALLA DALLA", category: "Girl Group", type: "Debut", date: "2019-02-11", ytId: "pNfTK39KiE8" },
+            { id: 1902, artist: "TXT", title: "CROWN", category: "Boy Group", type: "Debut", date: "2019-03-04", ytId: "W3iSnJ634pE" },
+            { id: 1903, artist: "EVERGLOW", title: "Bon Bon Chocolat", category: "Girl Group", type: "Debut", date: "2019-03-18", ytId: "HvGql8HwIIM" },
+            { id: 1904, artist: "AB6IX", title: "BREATHE", category: "Boy Group", type: "Debut", date: "2019-05-22", ytId: "W3iSnJ634pE" }
+        ];
+
+        const defaultVideoPoll = [
+            { id: 'v1', name: 'ILLIT - Magnetic', votes: 1420 },
+            { id: 'v2', name: 'ZEROBASEONE - In Bloom', votes: 1180 },
+            { id: 'v3', name: 'Stray Kids - Chk Chk Boom', votes: 1050 },
+            { id: 'v4', name: 'BABYMONSTER - SHEESH', votes: 950 },
+            { id: 'v5', name: 'NewJeans - Attention', votes: 890 }
+        ];
+
+        const defaultIdolPoll = [
+            { id: 'i1', name: 'NewJeans', votes: 2310 },
+            { id: 'i2', name: 'ZEROBASEONE', votes: 1890 },
+            { id: 'i3', name: 'Stray Kids', votes: 1720 },
+            { id: 'i4', name: 'ILLIT', votes: 1650 },
+            { id: 'i5', name: 'IVE', votes: 1290 }
+        ];
+
+        let archiveData = [];
+        let videoPollData = [];
+        let idolPollData = [];
+
+        function initData() {
+            const storedArchive = localStorage.getItem('kpopArchiveHub_v3');
+            archiveData = storedArchive ? JSON.parse(storedArchive) : [...defaultArchive];
+
+            const storedVideoPoll = localStorage.getItem('kpopVideoPoll_v3');
+            videoPollData = storedVideoPoll ? JSON.parse(storedVideoPoll) : [...defaultVideoPoll];
+
+            const storedIdolPoll = localStorage.getItem('kpopIdolPoll_v3');
+            idolPollData = storedIdolPoll ? JSON.parse(storedIdolPoll) : [...defaultIdolPoll];
+            
+            saveToStorage();
+        }
+
+        function saveToStorage() {
+            localStorage.setItem('kpopArchiveHub_v3', JSON.stringify(archiveData));
+            localStorage.setItem('kpopVideoPoll_v3', JSON.stringify(videoPollData));
+            localStorage.setItem('kpopIdolPoll_v3', JSON.stringify(idolPollData));
+        }
+
+        // View Navigation
+        function switchView(viewName) {
+            document.getElementById('archiveView').classList.remove('active');
+            document.getElementById('fandomView').classList.remove('active');
+            document.getElementById('tabArchive').classList.remove('active');
+            document.getElementById('tabFandom').classList.remove('active');
+
+            if (viewName === 'archive') {
+                document.getElementById('archiveView').classList.add('active');
+                document.getElementById('tabArchive').classList.add('active');
+                document.getElementById('filterSection').style.display = 'block';
+            } else {
+                document.getElementById('fandomView').classList.add('active');
+                document.getElementById('tabFandom').classList.add('active');
+                document.getElementById('filterSection').style.display = 'none';
+                renderFandomZone();
+            }
+        }
+
+        function renderCards(data) {
+            const grid = document.getElementById('gridContent');
+            grid.innerHTML = '';
+            document.getElementById('totalCount').innerText = data.length;
+
+            if (data.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa-solid fa-compact-disc"></i>
+                        <h3>No se encontraron lanzamientos</h3>
+                        <p>Intenta cambiar los filtros o registra un nuevo video.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            data.forEach(item => {
+                const year = new Date(item.date).getFullYear() || item.date.split('-')[0];
+                const badgeClass = item.type === 'Debut' ? 'badge-debut' : item.type === 'Comeback' ? 'badge-comeback' : 'badge-stage';
+                const categoryLabel = item.category || 'General';
+
+                const cardHtml = `
+                    <div class="card">
+                        <div class="thumbnail-wrapper">
+                            <iframe src="https://www.youtube.com/embed/${item.ytId}" allowfullscreen loading="lazy"></iframe>
+                        </div>
+                        <div class="card-info">
+                            <div class="badge-container">
+                                <span class="badge ${badgeClass}">${item.type}</span>
+                                <span class="badge badge-cat">${categoryLabel}</span>
+                                <span class="badge badge-year">${year}</span>
+                            </div>
+                            <div class="card-title">${item.title}</div>
+                            <div class="card-artist"><i class="fa-solid fa-microphone-lines"></i> ${item.artist}</div>
+                            <div class="card-meta">
+                                <span><i class="fa-regular fa-calendar"></i> ${item.date}</span>
+                                <div class="card-actions">
+                                    <button class="action-btn edit-btn" onclick="editEntry(${item.id})" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                                    <button class="action-btn delete-btn" onclick="deleteEntry(${item.id})" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.innerHTML += cardHtml;
+            });
+        }
+
+        function filterData() {
+            const search = document.getElementById('searchInput').value.toLowerCase().trim();
+            const category = document.getElementById('categoryFilter').value;
+            const year = document.getElementById('yearFilter').value;
+            const type = document.getElementById('typeFilter').value;
+
+            const filtered = archiveData.filter(item => {
+                const matchesSearch = item.artist.toLowerCase().includes(search) || item.title.toLowerCase().includes(search);
+                const matchesCategory = (category === 'ALL') || (item.category === category);
+                const itemYear = new Date(item.date).getFullYear().toString();
+                const matchesYear = (year === 'ALL') || (itemYear === year) || (item.date.startsWith(year));
+                const matchesType = (type === 'ALL') || (item.type === type);
+
+                return matchesSearch && matchesCategory && matchesYear && matchesType;
+            });
+
+            filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+            renderCards(filtered);
+        }
+
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('categoryFilter').value = 'ALL';
+            document.getElementById('yearFilter').value = 'ALL';
+            document.getElementById('typeFilter').value = 'ALL';
+            filterData();
+        }
+
+        function renderFandomZone() {
+            videoPollData.sort((a, b) => b.votes - a.votes);
+            idolPollData.sort((a, b) => b.votes - a.votes);
+
+            const maxVideoVotes = Math.max(...videoPollData.map(v => v.votes), 1);
+            const maxIdolVotes = Math.max(...idolPollData.map(i => i.votes), 1);
+
+            const videoContainer = document.getElementById('videoPollList');
+            videoContainer.innerHTML = '';
+            videoPollData.forEach((item, index) => {
+                const percentage = Math.round((item.votes / maxVideoVotes) * 100);
+                const rankClass = index === 0 ? 'rank-1' : index === 1 ? 'rank-2' : index === 2 ? 'rank-3' : '';
+                
+                videoContainer.innerHTML += `
+                    <div class="poll-item">
+                        <div class="poll-item-header">
+                            <div class="poll-item-name">
+                                <span class="rank-badge ${rankClass}">${index + 1}</span>
+                                <span>${item.name}</span>
+                            </div>
+                            <button class="vote-btn" onclick="castVote('video', '${item.id}')">
+                                <i class="fa-solid fa-thumbs-up"></i> Votar
+                            </button>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-fill" style="width: ${percentage}%"></div>
+                        </div>
+                        <div class="vote-count">${item.votes.toLocaleString()} Votos</div>
+                    </div>
+                `;
+            });
+
+            const idolContainer = document.getElementById('idolPollList');
+            idolContainer.innerHTML = '';
+            idolPollData.forEach((item, index) => {
+                const percentage = Math.round((item.votes / maxIdolVotes) * 100);
+                const rankClass = index === 0 ? 'rank-1' : index === 1 ? 'rank-2' : index === 2 ? 'rank-3' : '';
+
+                idolContainer.innerHTML += `
+                    <div class="poll-item">
+                        <div class="poll-item-header">
+                            <div class="poll-item-name">
+                                <span class="rank-badge ${rankClass}">${index + 1}</span>
+                                <span>${item.name}</span>
+                            </div>
+                            <button class="vote-btn" onclick="castVote('idol', '${item.id}')">
+                                <i class="fa-solid fa-heart"></i> Votar
+                            </button>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-fill" style="width: ${percentage}%"></div>
+                        </div>
+                        <div class="vote-count">${item.votes.toLocaleString()} Votos</div>
+                    </div>
+                `;
+            });
+        }
+
+        function castVote(type, id) {
+            if (type === 'video') {
+                const item = videoPollData.find(v => v.id === id);
+                if (item) item.votes++;
+            } else {
+                const item = idolPollData.find(i => i.id === id);
+                if (item) item.votes++;
+            }
+            saveToStorage();
+            renderFandomZone();
+            showToast("¡Voto registrado con éxito!");
+        }
+
+        function openModal(editItem = null) {
+            const form = document.getElementById('kpopForm');
+            if (editItem) {
+                document.getElementById('modalTitle').innerText = "Editar Registro";
+                document.getElementById('editId').value = editItem.id;
+                document.getElementById('artistInput').value = editItem.artist;
+                document.getElementById('titleInput').value = editItem.title;
+                document.getElementById('categoryInput').value = editItem.category;
+                document.getElementById('typeInput').value = editItem.type;
+                document.getElementById('dateInput').value = editItem.date;
+                document.getElementById('ytIdInput').value = editItem.ytId;
+            } else {
+                document.getElementById('modalTitle').innerText = "Agregar Registro K-Pop";
+                form.reset();
+                document.getElementById('editId').value = '';
+            }
+            document.getElementById('addModal').style.display = 'flex';
+        }
+
+        function openDeployModal() {
+            document.getElementById('deployModal').style.display = 'flex';
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        function saveEntry(e) {
+            e.preventDefault();
+            const editId = document.getElementById('editId').value;
+            
+            const entryData = {
+                id: editId ? parseInt(editId) : Date.now(),
+                artist: document.getElementById('artistInput').value.trim(),
+                title: document.getElementById('titleInput').value.trim(),
+                category: document.getElementById('categoryInput').value,
+                type: document.getElementById('typeInput').value,
+                date: document.getElementById('dateInput').value,
+                ytId: document.getElementById('ytIdInput').value.trim()
+            };
+
+            if (editId) {
+                const index = archiveData.findIndex(item => item.id === parseInt(editId));
+                if (index !== -1) archiveData[index] = entryData;
+            } else {
+                archiveData.unshift(entryData);
+            }
+
+            saveToStorage();
+            filterData();
+            closeModal('addModal');
+            showToast("Registro guardado exitosamente");
+        }
+
+        function editEntry(id) {
+            const item = archiveData.find(i => i.id === id);
+            if (item) openModal(item);
+        }
+
+        function deleteEntry(id) {
+            archiveData = archiveData.filter(item => item.id !== id);
+            saveToStorage();
+            filterData();
+            showToast("Registro eliminado");
+        }
+
+        // Export & Import Backup Utilities
+        function exportJSON() {
+            const backup = { archiveData, videoPollData, idolPollData };
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backup, null, 2));
+            const dlAnchor = document.createElement('a');
+            dlAnchor.setAttribute("href", dataStr);
+            dlAnchor.setAttribute("download", `kpop_archive_backup_${Date.now()}.json`);
+            document.body.appendChild(dlAnchor);
+            dlAnchor.click();
+            dlAnchor.remove();
+            showToast("Copia descargada correctamente");
+        }
+
+        function triggerImport() {
+            document.getElementById('importInput').click();
+        }
+
+        function importJSON(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                try {
+                    const parsed = JSON.parse(evt.target.result);
+                    if (parsed.archiveData) archiveData = parsed.archiveData;
+                    if (parsed.videoPollData) videoPollData = parsed.parseData;
+                    if (parsed.idolPollData) idolPollData = parsed.idolPollData;
+                    saveToStorage();
+                    filterData();
+                    showToast("Backup importado con éxito");
+                } catch (err) {
+                    showToast("Error al procesar el archivo JSON");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        // Initialize App on load
+        window.onload = function() {
+            initData();
+            filterData();
+        };
+    </script>
+</body>
+</html>
