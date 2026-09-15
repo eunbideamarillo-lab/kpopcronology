@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6836041116623012"
-     crossorigin="anonymous"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>K-POP Archive Hub & Fandom Zone (2019 - Presente)</title>
@@ -20,6 +18,7 @@
             --accent-purple: #8a2be2;
             --accent-blue: #00d2ff;
             --accent-yellow: #ffb703;
+            --accent-tiktok: #00f2fe;
             --text-main: #f0f2f8;
             --text-muted: #a0a5ba;
             --border-color: #2e334d;
@@ -65,28 +64,38 @@
 
         .nav-tabs {
             display: flex;
+            flex-direction: column;
             gap: 0.5rem;
             margin-bottom: 1.5rem;
             background: var(--bg-card);
-            padding: 0.3rem;
+            padding: 0.4rem;
             border-radius: 8px;
         }
 
         .nav-btn {
-            flex: 1;
-            padding: 0.6rem 0.2rem;
+            width: 100%;
+            padding: 0.6rem 0.5rem;
             border: none;
             background: transparent;
             color: var(--text-muted);
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             font-weight: bold;
             border-radius: 6px;
             cursor: pointer;
+            text-align: left;
             transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .nav-btn.active {
             background: var(--accent-pink);
+            color: #fff;
+        }
+
+        .nav-btn.tiktok-tab.active {
+            background: linear-gradient(45deg, #ff0050, #00f2fe);
             color: #fff;
         }
 
@@ -155,7 +164,7 @@
             padding: 2rem;
         }
 
-        /* Grid de Tarjetas de Video */
+        /* Grid Layout */
         .grid-layout {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -181,7 +190,7 @@
         .thumbnail-wrapper {
             position: relative;
             width: 100%;
-            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            padding-top: 56.25%;
             background: #000;
         }
 
@@ -254,7 +263,6 @@
             color: white;
         }
 
-        /* Botones de Acción */
         .btn {
             background: linear-gradient(45deg, var(--accent-pink), var(--accent-purple));
             color: white;
@@ -273,7 +281,78 @@
             color: var(--text-main);
         }
 
-        .btn:hover { opacity: 0.9; }
+        /* Sección TikTok */
+        .tiktok-header-card {
+            background: linear-gradient(135deg, rgba(255,0,80,0.15), rgba(0,242,254,0.15));
+            border: 1px solid rgba(0,242,254,0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .tiktok-profile-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .tiktok-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff0050, #00f2fe);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .btn-tiktok {
+            background: linear-gradient(45deg, #ff0050, #00f2fe);
+            color: white;
+            text-decoration: none;
+            padding: 0.7rem 1.4rem;
+            border-radius: 8px;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: transform 0.2s;
+        }
+
+        .btn-tiktok:hover {
+            transform: scale(1.05);
+        }
+
+        .tiktok-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .tiktok-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .tiktok-embed-container {
+            width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #000;
+            min-height: 400px;
+        }
 
         /* Fandom Zone Views */
         .fandom-container {
@@ -329,7 +408,7 @@
         /* Modal Forms */
         .modal {
             display: none;
-            position: fixed;
+            position fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.85);
             justify-content: center;
@@ -372,8 +451,9 @@
         <div class="logo">⚡ K-POP HUB</div>
 
         <div class="nav-tabs">
-            <button class="nav-btn active" id="tabArchiveBtn" onclick="switchTab('archive')">Catálogo</button>
-            <button class="nav-btn" id="tabFandomBtn" onclick="switchTab('fandom')">Fandom Zone</button>
+            <button class="nav-btn active" id="tabArchiveBtn" onclick="switchTab('archive')">📺 Catálogo K-Pop</button>
+            <button class="nav-btn" id="tabFandomBtn" onclick="switchTab('fandom')">👑 Fandom Zone</button>
+            <button class="nav-btn tiktok-tab" id="tabTiktokBtn" onclick="switchTab('tiktok')">🎵 TikTok (@eduardgi07)</button>
         </div>
         
         <div id="filterSection">
@@ -432,32 +512,48 @@
             </div>
         </header>
 
-        <!-- Vista de Catálogo de Videos -->
+        <!-- Vista de Catálogo de Videos K-Pop -->
         <div class="content-area" id="archiveView">
             <div class="grid-layout" id="gridContent">
-                <!-- Las tarjetas se generan dinámicamente -->
+                <!-- Tarjetas dinámicas -->
             </div>
         </div>
 
         <!-- Vista Fandom Zone -->
         <div class="content-area" id="fandomView" style="display: none;">
             <div class="fandom-container">
-                <!-- Votación de Canciones / MVs -->
                 <div class="fandom-card">
                     <h2>🔥 Canción & MV del Año (Ranking)</h2>
-                    <div id="videoPollList">
-                        <!-- Generado Dinámicamente -->
-                    </div>
+                    <div id="videoPollList"></div>
                 </div>
 
-                <!-- Votación de Idols y Grupos -->
                 <div class="fandom-card">
                     <h2>👑 Idol & Grupo Favorito</h2>
-                    <div id="idolPollList">
-                        <!-- Generado Dinámicamente -->
-                    </div>
+                    <div id="idolPollList"></div>
                     <button class="btn" style="width: 100%; margin-top: 1rem;" onclick="addCustomIdolPrompt()">+ Proponer Idol/Grupo</button>
                 </div>
+            </div>
+        </div>
+
+        <!-- Vista TikTok Section -->
+        <div class="content-area" id="tiktokView" style="display: none;">
+            <!-- Header Perfil TikTok -->
+            <div class="tiktok-header-card">
+                <div class="tiktok-profile-info">
+                    <div class="tiktok-avatar">🎵</div>
+                    <div>
+                        <h2 style="color: #fff; font-size: 1.4rem;">@eduardgi07</h2>
+                        <p style="color: var(--text-muted); font-size: 0.9rem;">Perfil Oficial de TikTok & Contenido K-Pop / Dance / Lifestyle</p>
+                    </div>
+                </div>
+                <a href="https://www.tiktok.com/@eduardgi07" target="_blank" rel="noopener noreferrer" class="btn-tiktok">
+                    <span>Seguir en TikTok</span> ↗
+                </a>
+            </div>
+
+            <h3 style="margin-bottom: 1.2rem; color: var(--accent-blue);">📹 Videos Destacados</h3>
+            <div class="tiktok-grid" id="tiktokGrid">
+                <!-- Se cargan dinámicamente los embeds de TikTok -->
             </div>
         </div>
     </main>
@@ -507,62 +603,32 @@
         </div>
     </div>
 
+    <!-- Script de Embeds de TikTok -->
+    <script async src="https://www.tiktok.com/embed.js"></script>
+
     <script>
-        // Base de Datos Central (2019 - 2026)
+        // Lista de TikToks
+        let tiktokVideos = [
+            { id: "1", title: "TikTok Destacado 1", videoId: "7345678901234567890" },
+            { id: "2", title: "TikTok Destacado 2", videoId: "7345678901234567891" }
+        ];
+
+        // Base de Datos K-Pop
         let archiveData = [
-            // --- DEBUTS Y RELEASES 2025-2026 ---
             { id: 601, artist: "MEOVV", title: "MEOW", category: "Girl Group", type: "Debut", date: "2024-09-06", ytId: "3m39s-5c4d8", votes: 42 },
             { id: 602, artist: "izna", title: "IZNA", category: "Girl Group", type: "Debut", date: "2024-11-25", ytId: "9S_JAnL_4dY", votes: 38 },
             { id: 603, artist: "NEXZ", title: "Ride the Vibe", category: "Boy Group", type: "Debut", date: "2024-05-20", ytId: "84K2xM1L0p0", votes: 19 },
-
-            // --- DEBUTS 2024 ---
             { id: 501, artist: "TWS", title: "Plot Twist", category: "Boy Group", type: "Debut", date: "2024-01-22", ytId: "hVAc1Vf2mSc", votes: 54 },
-            { id: 502, artist: "NCT WISH", title: "WISH", category: "Boy Group", type: "Debut", date: "2024-02-28", ytId: "jV5x9Nf8L3M", votes: 29 },
             { id: 503, artist: "ILLIT", title: "Magnetic", category: "Girl Group", type: "Debut", date: "2024-03-25", ytId: "Vk5-c_v4gMU", votes: 110 },
             { id: 504, artist: "BABYMONSTER", title: "SHEESH", category: "Girl Group", type: "Debut", date: "2024-04-01", ytId: "2wA_T83m3mU", votes: 98 },
-            { id: 505, artist: "RESCENE", title: "UhUh", category: "Girl Group", type: "Debut", date: "2024-03-26", ytId: "S3PqWvH9_8M", votes: 15 },
-
-            // --- DEBUTS 2023 ---
-            { id: 401, artist: "tripleS", title: "Rising", category: "Girl Group", type: "Debut", date: "2023-02-13", ytId: "1ZpS32F_Vio", votes: 33 },
-            { id: 402, artist: "xikers", title: "TRICKY HOUSE", category: "Boy Group", type: "Debut", date: "2023-03-30", ytId: "k5E8Z9R_X8s", votes: 21 },
-            { id: 403, artist: "BOYNEXTDOOR", title: "One and Only", category: "Boy Group", type: "Debut", date: "2023-05-30", ytId: "vB-7wD-_zSo", votes: 65 },
             { id: 404, artist: "KISS OF LIFE", title: "Shh", category: "Girl Group", type: "Debut", date: "2023-07-05", ytId: "f4n6mJ2_U28", votes: 87 },
             { id: 405, artist: "ZEROBASEONE", title: "In Bloom", category: "Boy Group", type: "Debut", date: "2023-07-10", ytId: "tI8K_c8W4aE", votes: 92 },
             { id: 406, artist: "RIIZE", title: "Get A Guitar", category: "Boy Group", type: "Debut", date: "2023-09-04", ytId: "iA_c_K4d2jE", votes: 89 },
-
-            // --- DEBUTS 2022 ---
-            { id: 301, artist: "Kepler", title: "WA DA DA", category: "Girl Group", type: "Debut", date: "2022-01-03", ytId: "n43P8X38p4s", votes: 45 },
-            { id: 302, artist: "NMIXX", title: "O.O", category: "Girl Group", type: "Debut", date: "2022-02-22", ytId: "3GWscde8rM8", votes: 58 },
             { id: 303, artist: "LE SSERAFIM", title: "FEARLESS", category: "Girl Group", type: "Debut", date: "2022-05-02", ytId: "4vbDFu0PUew", votes: 105 },
-            { id: 304, artist: "CLASS:y", title: "SHUT DOWN", category: "Girl Group", type: "Debut", date: "2022-05-05", ytId: "8jJ189S4V8E", votes: 12 },
             { id: 305, artist: "NewJeans", title: "Attention", category: "Girl Group", type: "Debut", date: "2022-07-22", ytId: "js1CtxSY38I", votes: 140 },
-            { id: 306, artist: "CSR", title: "Pop? Pop!", category: "Girl Group", type: "Debut", date: "2022-07-27", ytId: "9kP2810L0x0", votes: 10 },
-            { id: 307, artist: "FIFTY FIFTY", title: "Higher", category: "Girl Group", type: "Debut", date: "2022-11-18", ytId: "8iB51mN6qW4", votes: 30 },
-
-            // --- DEBUTS 2021 ---
-            { id: 220, artist: "TRI.BE", title: "DOOM DOOM TA", category: "Girl Group", type: "Debut", date: "2021-02-17", ytId: "1P2M5X17Nf0", votes: 14 },
-            { id: 221, artist: "PURPLE KISS", title: "Ponzona", category: "Girl Group", type: "Debut", date: "2021-03-15", ytId: "89M3m_7R28E", votes: 26 },
-            { id: 222, artist: "LIGHTSUM", title: "Vanilla", category: "Girl Group", type: "Debut", date: "2021-06-10", ytId: "bP1a7O3S7N8", votes: 18 },
-            { id: 223, artist: "JUST B", title: "DAMAGE", category: "Boy Group", type: "Debut", date: "2021-06-30", ytId: "7K8_5M13_p0", votes: 11 },
             { id: 224, artist: "IVE", title: "ELEVEN", category: "Girl Group", type: "Debut", date: "2021-12-01", ytId: "--FmExEAsM8", votes: 125 },
-            { id: 225, artist: "Xdinary Heroes", title: "Happy Death Day", category: "Boy Group", type: "Debut", date: "2021-12-06", ytId: "fGv3824K21M", votes: 40 },
-
-            // --- DEBUTS 2020 ---
-            { id: 204, artist: "CRAVITY", title: "Break all the Rules", category: "Boy Group", type: "Debut", date: "2020-04-14", ytId: "NFFq2f3IscU", votes: 22 },
-            { id: 205, artist: "SECRET NUMBER", title: "Who Dis?", category: "Girl Group", type: "Debut", date: "2020-05-19", ytId: "kMVcAnL38v4", votes: 31 },
-            { id: 207, artist: "Weeekly", title: "Tag Me (@Me)", category: "Girl Group", type: "Debut", date: "2020-06-30", ytId: "Moq0aOiULsk", votes: 27 },
-            { id: 208, artist: "TREASURE", title: "BOY", category: "Boy Group", type: "Debut", date: "2020-08-07", ytId: "J_UB7LY8OKs", votes: 75 },
-            { id: 212, artist: "P1Harmony", title: "SIREN", category: "Boy Group", type: "Debut", date: "2020-10-28", ytId: "2nB1y4QeCps", votes: 48 },
-            { id: 214, artist: "STAYC", title: "SO BAD", category: "Girl Group", type: "Debut", date: "2020-11-12", ytId: "g6qXy0m6Wsc", votes: 82 },
             { id: 215, artist: "aespa", title: "Black Mamba", category: "Girl Group", type: "Debut", date: "2020-11-17", ytId: "ZeerrnuLi5E", votes: 130 },
             { id: 217, artist: "ENHYPEN", title: "Given-Taken", category: "Boy Group", type: "Debut", date: "2020-11-30", ytId: "nQ6wLuYvGd4", votes: 115 },
-
-            // --- DEBUTS 2019 ---
-            { id: 105, artist: "ITZY", title: "DALLA DALLA", category: "Girl Group", type: "Debut", date: "2019-02-11", ytId: "pNfTK39KiE8", votes: 95 },
-            { id: 106, artist: "TXT", title: "CROWN", category: "Boy Group", type: "Debut", date: "2019-03-04", ytId: "W3iSnJ634pE", votes: 88 },
-            { id: 107, artist: "EVERGLOW", title: "Bon Bon Chocolat", category: "Girl Group", type: "Debut", date: "2019-03-18", ytId: "HvGql8HwIIM", votes: 50 },
-            { id: 113, artist: "AB6IX", title: "BREATHE", category: "Boy Group", type: "Debut", date: "2019-05-22", ytId: "M8UpWyL-600", votes: 18 },
-            { id: 116, artist: "CIX", title: "Movie Star", category: "Boy Group", type: "Debut", date: "2019-07-23", ytId: "5_X8pM2682s", votes: 25 },
             { id: 3, artist: "Wonho", title: "Open Mind", category: "Soloist", type: "Debut", date: "2020-09-04", ytId: "3C-mR0-pGls", votes: 150 }
         ];
 
@@ -575,7 +641,6 @@
             { name: "ILLIT", votes: 120 }
         ];
 
-        // Cargar LocalStorage
         if (localStorage.getItem('kpopArchiveV2')) {
             archiveData = JSON.parse(localStorage.getItem('kpopArchiveV2'));
         }
@@ -591,13 +656,33 @@
         function switchTab(tab) {
             document.getElementById('archiveView').style.display = tab === 'archive' ? 'block' : 'none';
             document.getElementById('fandomView').style.display = tab === 'fandom' ? 'block' : 'none';
+            document.getElementById('tiktokView').style.display = tab === 'tiktok' ? 'block' : 'none';
             document.getElementById('filterSection').style.display = tab === 'archive' ? 'block' : 'none';
 
             document.getElementById('tabArchiveBtn').classList.toggle('active', tab === 'archive');
             document.getElementById('tabFandomBtn').classList.toggle('active', tab === 'fandom');
+            document.getElementById('tabTiktokBtn').classList.toggle('active', tab === 'tiktok');
 
             if (tab === 'fandom') {
                 renderFandomZone();
+            } else if (tab === 'tiktok') {
+                renderTiktokSection();
+            }
+        }
+
+        function renderTiktokSection() {
+            const container = document.getElementById('tiktokGrid');
+            container.innerHTML = `
+                <div class="tiktok-card">
+                    <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@eduardgi07" data-unique-id="eduardgi07" data-embed-type="creator" style="max-width: 100%; min-width: 280px;">
+                        <section>
+                            <a target="_blank" href="https://www.tiktok.com/@eduardgi07?refer=creator_embed">@eduardgi07</a>
+                        </section>
+                    </blockquote>
+                </div>
+            `;
+            if (window.tiktokEmbed) {
+                window.tiktokEmbed.load();
             }
         }
 
@@ -606,7 +691,6 @@
             grid.innerHTML = '';
 
             document.getElementById('totalCount').innerText = data.length;
-            
             const totalVotes = archiveData.reduce((acc, curr) => acc + (curr.votes || 0), 0);
             document.getElementById('totalVotesCount').innerText = totalVotes;
 
@@ -666,11 +750,9 @@
         }
 
         function renderFandomZone() {
-            // Render Top Videos
             const sortedVideos = [...archiveData].sort((a, b) => (b.votes || 0) - (a.votes || 0)).slice(0, 5);
             const videoPollContainer = document.getElementById('videoPollList');
             videoPollContainer.innerHTML = '';
-
             const maxVideoVotes = sortedVideos[0]?.votes || 1;
 
             sortedVideos.forEach((v, index) => {
@@ -689,11 +771,9 @@
                 `;
             });
 
-            // Render Top Idols
             const sortedIdols = [...idolPollData].sort((a, b) => b.votes - a.votes);
             const idolPollContainer = document.getElementById('idolPollList');
             idolPollContainer.innerHTML = '';
-
             const maxIdolVotes = sortedIdols[0]?.votes || 1;
 
             sortedIdols.forEach((i, index) => {
@@ -770,7 +850,6 @@
             downloadAnchor.remove();
         }
 
-        // Renderizado inicial
         filterData();
     </script>
 </body>
