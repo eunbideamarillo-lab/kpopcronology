@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K-POP Archive Hub, Fandom Zone & HD Wallpapers</title>
+    <title>K-POP Archive Hub, Fandom Zone & Official Photocards</title>
 
     <!-- Código oficial de Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6836041116623012"
@@ -281,6 +281,90 @@
             color: var(--text-main);
         }
 
+        /* Photocards & Instant Cards Section Styles */
+        .photocard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .photocard-item {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 10px 10px 15px 10px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s;
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .photocard-item:hover {
+            transform: translateY(-8px) rotate(1deg);
+            box-shadow: 0 15px 30px rgba(255, 42, 116, 0.3);
+        }
+
+        .photocard-img-frame {
+            width: 100%;
+            height: 260px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #f0f0f0;
+            position: relative;
+        }
+
+        .photocard-img-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photocard-tag {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(0,0,0,0.65);
+            color: #fff;
+            font-size: 0.65rem;
+            padding: 3px 7px;
+            border-radius: 4px;
+            backdrop-filter: blur(4px);
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .photocard-details {
+            margin-top: 10px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .photocard-group {
+            font-size: 0.75rem;
+            color: #ff2a74;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .photocard-title {
+            font-size: 0.85rem;
+            color: #111;
+            font-weight: 700;
+            margin-top: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .photocard-type {
+            font-size: 0.7rem;
+            color: #666;
+            margin-top: 1px;
+        }
+
         /* Wallpapers Section Styles */
         .wallpaper-card {
             background: var(--bg-card);
@@ -313,13 +397,6 @@
 
         .wallpaper-card:hover .wallpaper-img-container img {
             transform: scale(1.05);
-        }
-
-        .wallpaper-info {
-            padding: 1rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
         }
 
         .btn-download-monetized {
@@ -393,16 +470,6 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 1.5rem;
-        }
-
-        .tiktok-card {
-            background: var(--bg-card);
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            padding: 1rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
         }
 
         /* Fandom Zone Views */
@@ -487,6 +554,20 @@
         }
         .modal-actions { display: flex; justify-content: flex-end; gap: 0.8rem; margin-top: 1rem; }
 
+        /* Preview Photocard Modal */
+        .pc-modal-body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+        .pc-modal-img {
+            max-width: 280px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(255, 42, 116, 0.4);
+            border: 4px solid #fff;
+        }
+
         @media (max-width: 768px) {
             body { flex-direction: column; overflow: auto; }
             aside { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--border-color); }
@@ -503,15 +584,17 @@
 
         <div class="nav-tabs">
             <button class="nav-btn active" id="tabArchiveBtn" onclick="switchTab('archive')">📺 Catálogo K-Pop</button>
+            <button class="nav-btn" id="tabPhotocardsBtn" onclick="switchTab('photocards')">🎴 Photocards & Instant</button>
             <button class="nav-btn" id="tabWallpapersBtn" onclick="switchTab('wallpapers')">🖼️ Wallpapers HD</button>
             <button class="nav-btn" id="tabFandomBtn" onclick="switchTab('fandom')">👑 Fandom Zone</button>
             <button class="nav-btn tiktok-tab" id="tabTiktokBtn" onclick="switchTab('tiktok')">🎵 TikTok (@eduardgi07)</button>
         </div>
         
+        <!-- Filtros Catálogo -->
         <div id="filterSection">
             <div class="filter-group">
                 <label>Buscar Artista / Canción</label>
-                <input type="text" id="searchInput" placeholder="Ej: aespa, NewJeans, TWS..." oninput="filterData()">
+                <input type="text" id="searchInput" placeholder="Ej: aespa, NewJeans, BTS..." oninput="filterData()">
             </div>
 
             <div class="filter-group">
@@ -550,6 +633,25 @@
             </div>
         </div>
 
+        <!-- Filtro Photocards -->
+        <div id="photocardFilterSection" style="display: none;">
+            <div class="filter-group">
+                <label>Seleccionar Grupo / Artista</label>
+                <select id="photocardGroupFilter" onchange="renderPhotocards()">
+                    <option value="ALL">Todos los Grupos Registrados</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Tipo de Tarjeta</label>
+                <select id="photocardTypeFilter" onchange="renderPhotocards()">
+                    <option value="ALL">Todos los Tipos</option>
+                    <option value="Photocard">Photocard Oficial</option>
+                    <option value="Instantcard">Instant Photo / Polaroid</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Filtro Wallpapers -->
         <div id="wallpaperFilterSection" style="display: none;">
             <div class="filter-group">
                 <label>Filtrar Wallpaper por Grupo</label>
@@ -580,11 +682,22 @@
             </div>
         </div>
 
+        <!-- Vista Photocards & Instant Cards -->
+        <div class="content-area" id="photocardsView" style="display: none;">
+            <div style="margin-bottom: 1.5rem; background: var(--bg-secondary); padding: 1.2rem; border-radius: 10px; border: 1px solid var(--border-color);">
+                <h2 style="color: var(--accent-pink); font-size: 1.3rem; margin-bottom: 0.3rem;">🎴 Photocards & Instant Photos Oficiales</h2>
+                <p style="color: var(--text-muted); font-size: 0.85rem;">Explora las colecciones de tarjetas fotográficas y fotos instantáneas conceptuales de tus grupos favoritos. Haz clic en cualquiera para ampliar la vista HD.</p>
+            </div>
+            <div class="photocard-grid" id="photocardGrid">
+                <!-- Photocards dinámicas -->
+            </div>
+        </div>
+
         <!-- Vista Wallpapers HD -->
         <div class="content-area" id="wallpapersView" style="display: none;">
             <div style="margin-bottom: 1.5rem; background: var(--bg-secondary); padding: 1.2rem; border-radius: 10px; border: 1px solid var(--border-color);">
                 <h2 style="color: var(--accent-yellow); font-size: 1.3rem; margin-bottom: 0.3rem;">🖼️ K-Pop Wallpapers HD (4K & Mobile)</h2>
-                <p style="color: var(--text-muted); font-size: 0.85rem;">Galería HD con 10 wallpapers dedicados para cada grupo. Haz clic en "Descargar HD" para acceder al enlace de alta velocidad.</p>
+                <p style="color: var(--text-muted); font-size: 0.85rem;">Galería HD con wallpapers dedicados para cada grupo. Haz clic en "Descargar HD" para acceder al enlace de alta velocidad.</p>
             </div>
             <div class="grid-layout" id="wallpaperGrid">
                 <!-- Wallpapers dinámicos -->
@@ -609,7 +722,6 @@
 
         <!-- Vista TikTok Section -->
         <div class="content-area" id="tiktokView" style="display: none;">
-            <!-- Header Perfil TikTok -->
             <div class="tiktok-header-card">
                 <div class="tiktok-profile-info">
                     <div class="tiktok-avatar">🎵</div>
@@ -625,12 +737,12 @@
 
             <h3 style="margin-bottom: 1.2rem; color: var(--accent-blue);">📹 Videos Destacados</h3>
             <div class="tiktok-grid" id="tiktokGrid">
-                <!-- Se cargan dinámicamente los embeds de TikTok -->
+                <!-- Embeds TikTok -->
             </div>
         </div>
     </main>
 
-    <!-- Modal Formulario -->
+    <!-- Modal Formulario Video -->
     <div class="modal" id="addModal">
         <div class="modal-content">
             <h2>Registrar Nuevo Video / Release</h2>
@@ -669,324 +781,576 @@
                 </div>
                 <div class="modal-actions">
                     <button type="button" class="btn btn-sec" onclick="toggleModal(false)">Cancelar</button>
-                    <button type="submit" class="btn">Guardar</button>
+                    <button type="submit" class="btn">Guardar Registro</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Script de Embeds de TikTok -->
-    <script async src="https://www.tiktok.com/embed.js"></script>
+    <!-- Modal Vista Previa Photocard -->
+    <div class="modal" id="photocardModal">
+        <div class="modal-content" style="text-align: center;">
+            <h2 id="pcModalTitle" style="color: var(--accent-pink); font-size: 1.2rem; margin-bottom: 0.5rem;">Photocard Details</h2>
+            <p id="pcModalSubtitle" style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;"></p>
+            <div class="pc-modal-body">
+                <img id="pcModalImg" src="" alt="Photocard Preview" class="pc-modal-img">
+            </div>
+            <div class="modal-actions" style="justify-content: center; margin-top: 1.5rem;">
+                <a id="pcModalDownload" href="" target="_blank" class="btn" style="text-decoration: none;">🔍 Ver en HD Original</a>
+                <button type="button" class="btn btn-sec" onclick="togglePhotocardModal(false)">Cerrar</button>
+            </div>
+        </div>
+    </div>
 
     <script>
-        // URL Base para acortadores monetizados (ejemplo: Adsterra/Monetag Direct Link o Bitly/Adfly)
-        // Puedes cambiar esta variable por tu enlace directo monetizado
-        const MONETIZED_LINK_BASE = "https://www.tiktok.com/@eduardgi07";
-
-        // Base de Datos K-Pop
-        let archiveData = [
-            { id: 601, artist: "MEOVV", title: "MEOW", category: "Girl Group", type: "Debut", date: "2024-09-06", ytId: "3m39s-5c4d8", votes: 42 },
-            { id: 602, artist: "izna", title: "IZNA", category: "Girl Group", type: "Debut", date: "2024-11-25", ytId: "9S_JAnL_4dY", votes: 38 },
-            { id: 603, artist: "NEXZ", title: "Ride the Vibe", category: "Boy Group", type: "Debut", date: "2024-05-20", ytId: "84K2xM1L0p0", votes: 19 },
-            { id: 501, artist: "TWS", title: "Plot Twist", category: "Boy Group", type: "Debut", date: "2024-01-22", ytId: "hVAc1Vf2mSc", votes: 54 },
-            { id: 503, artist: "ILLIT", title: "Magnetic", category: "Girl Group", type: "Debut", date: "2024-03-25", ytId: "Vk5-c_v4gMU", votes: 110 },
-            { id: 504, artist: "BABYMONSTER", title: "SHEESH", category: "Girl Group", type: "Debut", date: "2024-04-01", ytId: "2wA_T83m3mU", votes: 98 },
-            { id: 404, artist: "KISS OF LIFE", title: "Shh", category: "Girl Group", type: "Debut", date: "2023-07-05", ytId: "f4n6mJ2_U28", votes: 87 },
-            { id: 405, artist: "ZEROBASEONE", title: "In Bloom", category: "Boy Group", type: "Debut", date: "2023-07-10", ytId: "tI8K_c8W4aE", votes: 92 },
-            { id: 406, artist: "RIIZE", title: "Get A Guitar", category: "Boy Group", type: "Debut", date: "2023-09-04", ytId: "iA_c_K4d2jE", votes: 89 },
-            { id: 303, artist: "LE SSERAFIM", title: "FEARLESS", category: "Girl Group", type: "Debut", date: "2022-05-02", ytId: "4vbDFu0PUew", votes: 105 },
-            { id: 305, artist: "NewJeans", title: "Attention", category: "Girl Group", type: "Debut", date: "2022-07-22", ytId: "js1CtxSY38I", votes: 140 },
-            { id: 224, artist: "IVE", title: "ELEVEN", category: "Girl Group", type: "Debut", date: "2021-12-01", ytId: "--FmExEAsM8", votes: 125 },
-            { id: 215, artist: "aespa", title: "Black Mamba", category: "Girl Group", type: "Debut", date: "2020-11-17", ytId: "ZeerrnuLi5E", votes: 130 },
-            { id: 217, artist: "ENHYPEN", title: "Given-Taken", category: "Boy Group", type: "Debut", date: "2020-11-30", ytId: "nQ6wLuYvGd4", votes: 115 },
-            { id: 3, artist: "Wonho", title: "Open Mind", category: "Soloist", type: "Debut", date: "2020-09-04", ytId: "3C-mR0-pGls", votes: 150 }
+        // Datos Iniciales del Catálogo
+        const initialCatalog = [
+            { id: 1, artist: "BTS", title: "Dynamite", category: "Boy Group", type: "Comeback", date: "2020-08-21", ytId: "gA3Lp_vOio0", votes: 1420 },
+            { id: 2, artist: "aespa", title: "Armageddon", category: "Girl Group", type: "Comeback", date: "2024-05-27", ytId: "nFYwcndNuOY", votes: 980 },
+            { id: 3, artist: "NewJeans", title: "How Sweet", category: "Girl Group", type: "Comeback", date: "2024-05-24", ytId: "Q3K0TOvTO5A", votes: 1150 },
+            { id: 4, artist: "TWICE", title: "ONE SPARK", category: "Girl Group", type: "Comeback", date: "2024-02-23", ytId: "jCxa_a25k4A", votes: 850 },
+            { id: 5, artist: "Stray Kids", title: "Chk Chk Boom", category: "Boy Group", type: "Comeback", date: "2024-07-19", ytId: "0P034oA030g", votes: 1310 },
+            { id: 6, artist: "SEVENTEEN", title: "MAESTRO", category: "Boy Group", type: "Comeback", date: "2024-04-29", ytId: "zSQ48zyWZrY", votes: 920 },
+            { id: 7, artist: "ILLIT", title: "Magnetic", category: "Girl Group", type: "Debut", date: "2024-03-25", ytId: "Vk5-c_v4gMU", votes: 1100 },
+            { id: 8, artist: "ITZY", title: "UNTOUCHABLE", category: "Girl Group", type: "Comeback", date: "2024-01-08", ytId: "gS_x2c4eT6I", votes: 760 },
+            { id: 9, artist: "TXT", title: "Deja Vu", category: "Boy Group", type: "Comeback", date: "2024-04-01", ytId: "A380I_J-k94", votes: 890 },
+            { id: 10, artist: "BLACKPINK", title: "Shut Down", category: "Girl Group", type: "Comeback", date: "2022-09-16", ytId: "POe9SOEKotk", votes: 1540 },
+            { id: 11, artist: "LE SSERAFIM", title: "EASY", category: "Girl Group", type: "Comeback", date: "2024-02-19", ytId: "bNKXxfFqa-o", votes: 940 },
+            { id: 12, artist: "ENHYPEN", title: "XO (Only If You Say Yes)", category: "Boy Group", type: "Comeback", date: "2024-07-12", ytId: "zX4Lp3qH82w", votes: 870 },
+            { id: 13, artist: "ATEEZ", title: "WORK", category: "Boy Group", type: "Comeback", date: "2024-05-31", ytId: "P_A94e9fU5Q", votes: 910 },
+            { id: 14, artist: "IVE", title: "HEYA", category: "Girl Group", type: "Comeback", date: "2024-04-29", ytId: "07O2f_aA04A", votes: 960 },
+            { id: 15, artist: "NMIXX", title: "DASH", category: "Girl Group", type: "Comeback", date: "2024-01-15", ytId: "6I243L1d6uM", votes: 690 },
+            { id: 16, artist: "Wonho", title: "Open Mind", category: "Soloist", type: "Debut", date: "2020-09-04", ytId: "3zA7045b13E", votes: 820 }
         ];
 
-        let idolPollData = [
-            { name: "Wonho", votes: 210 },
-            { name: "aespa", votes: 185 },
-            { name: "NewJeans", votes: 170 },
-            { name: "Stray Kids", votes: 165 },
-            { name: "ENHYPEN", votes: 140 },
-            { name: "ILLIT", votes: 120 }
+        // Mínimo 10 Photocards & Instant Cards por grupo registrado
+        const photocardDatabase = [
+            // BTS (10)
+            { group: "BTS", title: "Jungkook - Golden Era", type: "Photocard", img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80" },
+            { group: "BTS", title: "V (Taehyung) - Layover Spec", type: "Instantcard", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80" },
+            { group: "BTS", title: "Jimiin - FACE Concept", type: "Photocard", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80" },
+            { group: "BTS", title: "RM - Indigo Polaroid", type: "Instantcard", img: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=600&q=80" },
+            { group: "BTS", title: "Suga - D-DAY Official", type: "Photocard", img: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=600&q=80" },
+            { group: "BTS", title: "J-Hope - Jack in the Box", type: "Instantcard", img: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=600&q=80" },
+            { group: "BTS", title: "Jin - The Astronaut", type: "Photocard", img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=600&q=80" },
+            { group: "BTS", title: "BTS Group - Proof Edition", type: "Instantcard", img: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=600&q=80" },
+            { group: "BTS", title: "Jungkook - Seven Concept", type: "Photocard", img: "https://images.unsplash.com/photo-1488161628813-04466f872be2?auto=format&fit=crop&w=600&q=80" },
+            { group: "BTS", title: "V - Yeantan Polaroid", type: "Instantcard", img: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=600&q=80" },
+
+            // aespa (10)
+            { group: "aespa", title: "Karina - Armageddon PC", type: "Photocard", img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80" },
+            { group: "aespa", title: "Winter - Drama Instant", type: "Instantcard", img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80" },
+            { group: "aespa", title: "Giselle - Supernova", type: "Photocard", img: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80" },
+            { group: "aespa", title: "Ningning - Spicy Polaroid", type: "Instantcard", img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=600&q=80" },
+            { group: "aespa", title: "Karina - Synk Road PC", type: "Photocard", img: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=600&q=80" },
+            { group: "aespa", title: "Winter - Savage Concept", type: "Instantcard", img: "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=600&q=80" },
+            { group: "aespa", title: "Giselle - My World PC", type: "Photocard", img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=600&q=80" },
+            { group: "aespa", title: "Ningning - Girls Spec", type: "Instantcard", img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80" },
+            { group: "aespa", title: "aespa Unit - Kwangya Pass", type: "Photocard", img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80" },
+            { group: "aespa", title: "Karina & Winter - Twin Card", type: "Instantcard", img: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80" },
+
+            // NewJeans (10)
+            { group: "NewJeans", title: "Minji - How Sweet PC", type: "Photocard", img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80" },
+            { group: "NewJeans", title: "Hanni - Supernatural Instant", type: "Instantcard", img: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80" },
+            { group: "NewJeans", title: "Danielle - Get Up Bag PC", type: "Photocard", img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=600&q=80" },
+            { group: "NewJeans", title: "Haerin - OMG Bunny Card", type: "Instantcard", img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80" },
+            { group: "NewJeans", title: "Hyein - Ditto Memory", type: "Photocard", img: "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=600&q=80" },
+            { group: "NewJeans", title: "Hanni - Gucci Ambassador", type: "Instantcard", img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=600&q=80" },
+            { group: "NewJeans", title: "Minji - Bluebook Edition", type: "Photocard", img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80" },
+            { group: "NewJeans", title: "Haerin - Cat Paws PC", type: "Instantcard", img: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80" },
+            { group: "NewJeans", title: "Danielle - Little Mermaid", type: "Photocard", img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=600&q=80" },
+            { group: "NewJeans", title: "NewJeans Group - Powerpuff", type: "Instantcard", img: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=600&q=80" },
+
+            // TWICE (10)
+            { group: "TWICE", title: "Nayeon - POP! Solo PC", type: "Photocard", img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80" },
+            { group: "TWICE", title: "Sana - With YOU-th Instant", type: "Instantcard", img: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80" },
+            { group: "TWICE", title: "Momo - READY TO BE PC", type: "Photocard", img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80" },
+            { group: "TWICE", title: "Jihyo - Zone Concept", type: "Instantcard", img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=600&q=80" },
+            { group: "TWICE", title: "Tzuyu - Talk That Talk", type: "Photocard", img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=600&q=80" },
+            { group: "TWICE", title: "Mina - MISAMO Masterpiece", type: "Instantcard", img: "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=600&q=80" },
+            { group: "TWICE", title: "Dahyun - World Tour Spec", type: "Photocard", img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80" },
+            { group: "TWICE", title: "Chaeyoung - Formula of Love", type: "Instantcard", img: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80" },
+            { group: "TWICE", title: "Jeongyeon - Moonlight Sunrise", type: "Photocard", img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=600&q=80" },
+            { group: "TWICE", title: "Sana - Cheese Smile PC", type: "Instantcard", img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80" },
+
+            // Stray Kids (10)
+            { group: "Stray Kids", title: "Felix - Chk Chk Boom PC", type: "Photocard", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80" },
+            { group: "Stray Kids", title: "Hyunjin - ATE Album Instant", type: "Instantcard", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80" },
+            { group: "Stray Kids", title: "Bang Chan - ROCK-STAR PC", type: "Photocard", img: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=600&q=80" },
+            { group: "Stray Kids", title: "Lee Know - 5-STAR Polaroid", type: "Instantcard", img: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=600&q=80" },
+            { group: "Stray Kids", title: "Han - MAXIDENT PC", type: "Photocard", img: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=600&q=80" },
+            { group: "Stray Kids", title: "Seungmin - Maniac Tour", type: "Instantcard", img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=600&q=80" },
+            { group: "Stray Kids", title: "I.N - Oddinary Concept", type: "Photocard", img: "https://images.unsplash.com/photo-1488161628813-04466f872be2?auto=format&fit=crop&w=600&q=80" },
+            { group: "Stray Kids", title: "Changbin - DWAEKKI PC", type: "Instantcard", img: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=600&q=80" },
+            { group: "Stray Kids", title: "Felix - Sunshine Smile", type: "Photocard", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80" },
+            { group: "Stray Kids", title: "Hyunjin - Versace Selfie", type: "Instantcard", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80" },
+
+            // SEVENTEEN (10)
+            { group: "SEVENTEEN", title: "Mingyu - MAESTRO PC", type: "Photocard", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80" },
+            { group: "SEVENTEEN", title: "Hoshi - Tiger Power Instant", type: "Instantcard", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80" },
+            { group: "SEVENTEEN", title: "Jeonghan - Seventeenth Heaven", type: "Photocard", img: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=600&q=80" },
+            { group: "SEVENTEEN", title: "Wonwoo - FML Album Card", type: "Instantcard", img: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=600&q=80" },
+            { group: "SEVENTEEN", title: "S.Coups - Leader Spec", type: "Photocard", img: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=600&q=80" },
+            { group: "SEVENTEEN", title: "Woozi - Producer PC", type: "Instantcard", img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=600&q=80" },
+            { group: "SEVENTEEN", title: "Joshua - Be The Sun", type: "Photocard", img: "https://images.unsplash.com/photo-1488161628813-04466f872be2?auto=format&fit=crop&w=600&q=80" },
+            { group: "SEVENTEEN", title: "DK - Arthur Musical PC", type: "Instantcard", img: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=600&q=80" },
+            { group: "SEVENTEEN", title: "Seungkwan - Variety Prince", type: "Photocard", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80" },
+            { group: "SEVENTEEN", title: "Vernon - Hip Hop Unit", type: "Instantcard", img: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=600&q=80" },
+
+            // ILLIT (10)
+            { group: "ILLIT", title: "Wonhee - Magnetic PC", type: "Photocard", img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80" },
+            { group: "ILLIT", title: "Minju - Super Real Me Instant", type: "Instantcard", img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80" },
+            { group: "ILLIT", title: "Iroha - Debut Concept", type: "Photocard", img: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80" },
+            { group: "ILLIT", title: "Moka - Lucky Girl Polaroid", type: "Instantcard", img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=600&q=80" },
+            { group: "ILLIT", title: "Yunah - Chic Pose PC", type: "Photocard", img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=600&q=80" },
+            { group: "ILLIT", title: "Wonhee - Bunny Hair", type: "Instantcard", img: "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=600&q=80" },
+            { group: "ILLIT", title: "Minju - Voice Angel PC", type: "Photocard", img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80" },
+            { group: "ILLIT", title: "Iroha - Dance Practice", type: "Instantcard", img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80" },
+            { group: "ILLIT", title: "Moka - Sweet Smile", type: "Photocard", img: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80" },
+            { group: "ILLIT", title: "ILLIT Group - First Win", type: "Instantcard", img: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=600&q=80" },
+
+            // ITZY (10)
+            { group: "ITZY", title: "Yeji - UNTOUCHABLE PC", type: "Photocard", img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80" },
+            { group: "ITZY", title: "Ryujin - Born to Be Instant", type: "Instantcard", img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80" },
+            { group: "ITZY", title: "Chaeryeong - Gold Solo PC", type: "Photocard", img: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80" },
+            { group: "ITZY", title: "Yuna - Crown Pose Polaroid", type: "Instantcard", img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=600&q=80" },
+            { group: "ITZY", title: "Lia - Blossom Concept", type: "Photocard", img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=600&q=80" },
+            { group: "ITZY", title: "Yeji - Cat Eyes PC", type: "Instantcard", img: "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=600&q=80" },
+            { group: "ITZY", title: "Ryujin - Shoulder Dance", type: "Photocard", img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80" },
+            { group: "ITZY", title: "Chaeryeong - Cheshire Era", type: "Instantcard", img: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80" },
+            { group: "ITZY", title: "Yuna - Sneaker Queen", type: "Photocard", img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=600&q=80" },
+            { group: "ITZY", title: "ITZY - World Tour Memory", type: "Instantcard", img: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=600&q=80" },
+
+            // TXT (10)
+            { group: "TXT", title: "Yeonjun - Deja Vu PC", type: "Photocard", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80" },
+            { group: "TXT", title: "Soobin - Minisode 3 Instant", type: "Instantcard", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80" },
+            { group: "TXT", title: "Beomgyu - Freefall Concept", type: "Photocard", img: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=600&q=80" },
+            { group: "TXT", title: "Taehyun - Sugar Rush Ride", type: "Instantcard", img: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=600&q=80" },
+            { group: "TXT", title: "Hueningkai - Thursday Child", type: "Photocard", img: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=600&q=80" },
+            { group: "TXT", title: "Yeonjun - IT Boy Style PC", type: "Instantcard", img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=600&q=80" },
+            { group: "TXT", title: "Soobin - Bunny Leader PC", type: "Photocard", img: "https://images.unsplash.com/photo-1488161628813-04466f872be2?auto=format&fit=crop&w=600&q=80" },
+            { group: "TXT", title: "Beomgyu - Guitar Vibes", type: "Instantcard", img: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=600&q=80" },
+            { group: "TXT", title: "Taehyun - Vocal Power", type: "Photocard", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80" },
+            { group: "TXT", title: "TXT - Lollapalooza Spec", type: "Instantcard", img: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=600&q=80" },
+
+            // BLACKPINK (10)
+            { group: "BLACKPINK", title: "Jennie - Solo Ruby PC", type: "Photocard", img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80" },
+            { group: "BLACKPINK", title: "Lisa - Rockstar Polaroid", type: "Instantcard", img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80" },
+            { group: "BLACKPINK", title: "Rosé - APT. Spec PC", type: "Photocard", img: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80" },
+            { group: "BLACKPINK", title: "Jisoo - ME Flower Instant", type: "Instantcard", img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=600&q=80" },
+            { group: "BLACKPINK", title: "Jennie - Chanel Ambassador", type: "Photocard", img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=600&q=80" },
+            { group: "BLACKPINK", title: "Lisa - Celine Queen PC", type: "Instantcard", img: "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=600&q=80" },
+            { group: "BLACKPINK", title: "Rosé - YSL Golden Hour", type: "Photocard", img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80" },
+            { group: "BLACKPINK", title: "Jisoo - Dior Princess PC", type: "Instantcard", img: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80" },
+            { group: "BLACKPINK", title: "BLACKPINK - Born Pink Tour", type: "Photocard", img: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=600&q=80" },
+            { group: "BLACKPINK", title: "Jennie & Lisa - JenLisa PC", type: "Instantcard", img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80" },
+
+            // LE SSERAFIM (10)
+            { group: "LE SSERAFIM", title: "Chaewon - EASY Era PC", type: "Photocard", img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80" },
+            { group: "LE SSERAFIM", title: "Yunjin - Huh Artist Instant", type: "Instantcard", img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80" },
+            { group: "LE SSERAFIM", title: "Kazuha - Ballerina Pose", type: "Photocard", img: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80" },
+            { group: "LE SSERAFIM", title: "Sakura - Gamer Queen PC", type: "Instantcard", img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=600&q=80" },
+            { group: "LE SSERAFIM", title: "Eunchae - Star Diary PC", type: "Photocard", img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=600&q=80" },
+            { group: "LE SSERAFIM", title: "Chaewon - Bob Hair Supremacy", type: "Instantcard", img: "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=600&q=80" },
+            { group: "LE SSERAFIM", title: "Yunjin - HOT Girl Summer", type: "Photocard", img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80" },
+            { group: "LE SSERAFIM", title: "Kazuha - Abs Glow PC", type: "Instantcard", img: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80" },
+            { group: "LE SSERAFIM", title: "Sakura - IZ*ONE Memory PC", type: "Photocard", img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=600&q=80" },
+            { group: "LE SSERAFIM", title: "LE SSERAFIM - Coachella Spec", type: "Instantcard", img: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=600&q=80" },
+
+            // ENHYPEN (10)
+            { group: "ENHYPEN", title: "Jungwon - XO Concept PC", type: "Photocard", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80" },
+            { group: "ENHYPEN", title: "Ni-ki - Dance King Instant", type: "Instantcard", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80" },
+            { group: "ENHYPEN", title: "Sunghoon - Ice Prince PC", type: "Photocard", img: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=600&q=80" },
+            { group: "ENHYPEN", title: "Heeseung - Dark Blood PC", type: "Instantcard", img: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=600&q=80" },
+            { group: "ENHYPEN", title: "Jay - Prada Boy PC", type: "Photocard", img: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=600&q=80" },
+            { group: "ENHYPEN", title: "Jake - Puppy Eyes Instant", type: "Instantcard", img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=600&q=80" },
+            { group: "ENHYPEN", title: "Sunoo - Sunshine Smile", type: "Photocard", img: "https://images.unsplash.com/photo-1488161628813-04466f872be2?auto=format&fit=crop&w=600&q=80" },
+            { group: "ENHYPEN", title: "Jungwon - Leader Wink PC", type: "Instantcard", img: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=600&q=80" },
+            { group: "ENHYPEN", title: "Sunghoon - Tiffany & Co PC", type: "Photocard", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80" },
+            { group: "ENHYPEN", title: "ENHYPEN - Fate World Tour", type: "Instantcard", img: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=600&q=80" },
+
+            // ATEEZ (10)
+            { group: "ATEEZ", title: "San - WORK Era PC", type: "Photocard", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80" },
+            { group: "ATEEZ", title: "Hongjoong - Captain Polaroid", type: "Instantcard", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80" },
+            { group: "ATEEZ", title: "Seonghwa - Visual King PC", type: "Photocard", img: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=600&q=80" },
+            { group: "ATEEZ", title: "Mingi - Bouncy Rap Spec", type: "Instantcard", img: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=600&q=80" },
+            { group: "ATEEZ", title: "Wooyoung - Crazy Form PC", type: "Photocard", img: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=600&q=80" },
+            { group: "ATEEZ", title: "Yunho - Golden Retriever", type: "Instantcard", img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=600&q=80" },
+            { group: "ATEEZ", title: "Yeosang - Statue Pose PC", type: "Photocard", img: "https://images.unsplash.com/photo-1488161628813-04466f872be2?auto=format&fit=crop&w=600&q=80" },
+            { group: "ATEEZ", title: "Jongho - Main Vocal Power", type: "Instantcard", img: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=600&q=80" },
+            { group: "ATEEZ", title: "San - Demon Pose PC", type: "Photocard", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80" },
+            { group: "ATEEZ", title: "ATEEZ - Pirate King Tour", type: "Instantcard", img: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=600&q=80" },
+
+            // IVE (10)
+            { group: "IVE", title: "Wonyoung - HEYA Era PC", type: "Photocard", img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80" },
+            { group: "IVE", title: "Yujin - Baddie Instant", type: "Instantcard", img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80" },
+            { group: "IVE", title: "Rei - Japanese Princess", type: "Photocard", img: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80" },
+            { group: "IVE", title: "Gaeul - Sunbae Vibe PC", type: "Instantcard", img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=600&q=80" },
+            { group: "IVE", title: "Liz - Blonde Vocal PC", type: "Photocard", img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=600&q=80" },
+            { group: "IVE", title: "Leeseo - Maknae Cutie", type: "Instantcard", img: "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=600&q=80" },
+            { group: "IVE", title: "Wonyoung - Miu Miu Queen", type: "Photocard", img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80" },
+            { group: "IVE", title: "Yujin - Earth Arcade Spec", type: "Instantcard", img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80" },
+            { group: "IVE", title: "Rei - Heart Pose PC", type: "Photocard", img: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80" },
+            { group: "IVE", title: "IVE - Show What I Have", type: "Instantcard", img: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=600&q=80" },
+
+            // NMIXX (10)
+            { group: "NMIXX", title: "Sullyoon - DASH Era PC", type: "Photocard", img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80" },
+            { group: "NMIXX", title: "Haewon - Meme Queen Instant", type: "Instantcard", img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80" },
+            { group: "NMIXX", title: "Lily - Vocal Power PC", type: "Photocard", img: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80" },
+            { group: "NMIXX", title: "Bae - Cool Girl Vibe", type: "Instantcard", img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=600&q=80" },
+            { group: "NMIXX", title: "Jiwoo - Fe3O4 Concept", type: "Photocard", img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=600&q=80" },
+            { group: "NMIXX", title: "Kyujin - Maknae Energy", type: "Instantcard", img: "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=600&q=80" },
+            { group: "NMIXX", title: "Sullyoon - Visual Goddess", type: "Photocard", img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80" },
+            { group: "NMIXX", title: "Haewon - Workwear PC", type: "Instantcard", img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80" },
+            { group: "NMIXX", title: "Lily - Enswer Love PC", type: "Photocard", img: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80" },
+            { group: "NMIXX", title: "NMIXX - Mixx Pop Group", type: "Instantcard", img: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=600&q=80" },
+
+            // Wonho (10)
+            { group: "Wonho", title: "Wonho - Open Mind PC", type: "Photocard", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80" },
+            { group: "Wonho", title: "Wonho - Blue Letter Polaroid", type: "Instantcard", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80" },
+            { group: "Wonho", title: "Wonho - FACADE Special PC", type: "Photocard", img: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=600&q=80" },
+            { group: "Wonho", title: "Wonho - Gym Workout Instant", type: "Instantcard", img: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=600&q=80" },
+            { group: "Wonho", title: "Wonho - WENEE Love Note", type: "Photocard", img: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=600&q=80" },
+            { group: "Wonho", title: "Wonho - Eye Contact Selfie", type: "Instantcard", img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=600&q=80" },
+            { group: "Wonho", title: "Wonho - Concert Stage PC", type: "Photocard", img: "https://images.unsplash.com/photo-1488161628813-04466f872be2?auto=format&fit=crop&w=600&q=80" },
+            { group: "Wonho", title: "Wonho - Summer Vibe Instant", type: "Instantcard", img: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=600&q=80" },
+            { group: "Wonho", title: "Wonho - Denim Outfit PC", type: "Photocard", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80" },
+            { group: "Wonho", title: "Wonho - Cute Peace Sign", type: "Instantcard", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80" }
         ];
 
-        if (localStorage.getItem('kpopArchiveV2')) {
-            archiveData = JSON.parse(localStorage.getItem('kpopArchiveV2'));
-        }
-        if (localStorage.getItem('kpopIdolPoll')) {
-            idolPollData = JSON.parse(localStorage.getItem('kpopIdolPoll'));
-        }
+        let catalogData = JSON.parse(localStorage.getItem('kpop_hub_data')) || initialCatalog;
 
-        function saveData() {
-            localStorage.setItem('kpopArchiveV2', JSON.stringify(archiveData));
-            localStorage.setItem('kpopIdolPoll', JSON.stringify(idolPollData));
-        }
+        // Inicialización
+        document.addEventListener("DOMContentLoaded", () => {
+            renderCatalog(catalogData);
+            populateGroupFilters();
+            renderPhotocards();
+            renderWallpapers();
+            renderFandomPolls();
+            renderTikToks();
+            updateHeaderStats();
+        });
 
-        function switchTab(tab) {
-            document.getElementById('archiveView').style.display = tab === 'archive' ? 'block' : 'none';
-            document.getElementById('wallpapersView').style.display = tab === 'wallpapers' ? 'block' : 'none';
-            document.getElementById('fandomView').style.display = tab === 'fandom' ? 'block' : 'none';
-            document.getElementById('tiktokView').style.display = tab === 'tiktok' ? 'block' : 'none';
+        // Poblar Selectores de Grupos dinámicamente según lo registrado
+        function populateGroupFilters() {
+            const registeredGroups = [...new Set(catalogData.map(item => item.artist))].sort();
             
-            document.getElementById('filterSection').style.display = tab === 'archive' ? 'block' : 'none';
-            document.getElementById('wallpaperFilterSection').style.display = tab === 'wallpapers' ? 'block' : 'none';
+            const pcSelect = document.getElementById("photocardGroupFilter");
+            const wpSelect = document.getElementById("wallpaperGroupFilter");
 
-            document.getElementById('tabArchiveBtn').classList.toggle('active', tab === 'archive');
-            document.getElementById('tabWallpapersBtn').classList.toggle('active', tab === 'wallpapers');
-            document.getElementById('tabFandomBtn').classList.toggle('active', tab === 'fandom');
-            document.getElementById('tabTiktokBtn').classList.toggle('active', tab === 'tiktok');
+            pcSelect.innerHTML = `<option value="ALL">Todos los Grupos Registrados (${registeredGroups.length})</option>`;
+            wpSelect.innerHTML = `<option value="ALL">Todos los Grupos Registrados (${registeredGroups.length})</option>`;
 
-            if (tab === 'wallpapers') {
-                populateWallpaperSelect();
-                renderWallpapers();
-            } else if (tab === 'fandom') {
-                renderFandomZone();
-            } else if (tab === 'tiktok') {
-                renderTiktokSection();
-            }
+            registeredGroups.forEach(group => {
+                pcSelect.innerHTML += `<option value="${group}">${group}</option>`;
+                wpSelect.innerHTML += `<option value="${group}">${group}</option>`;
+            });
         }
 
-        // Generación Automática de Wallpapers HD para los grupos registrados
-        function generateWallpapers() {
-            const wallpapers = [];
-            const uniqueArtists = [...new Set(archiveData.map(item => item.artist))];
+        // Navegación por pestañas
+        function switchTab(tab) {
+            const tabs = ['archive', 'photocards', 'wallpapers', 'fandom', 'tiktok'];
+            tabs.forEach(t => {
+                document.getElementById(`${t}View`).style.display = t === tab ? 'block' : 'none';
+                const btn = document.getElementById(`tab${capitalize(t)}Btn`);
+                if(btn) {
+                    if (t === tab) btn.classList.add('active');
+                    else btn.classList.remove('active');
+                }
+            });
 
-            uniqueArtists.forEach((artist, artistIdx) => {
+            // Visibilidad de filtros
+            document.getElementById('filterSection').style.display = tab === 'archive' ? 'block' : 'none';
+            document.getElementById('photocardFilterSection').style.display = tab === 'photocards' ? 'block' : 'none';
+            document.getElementById('wallpaperFilterSection').style.display = tab === 'wallpapers' ? 'block' : 'none';
+        }
+
+        function capitalize(s) {
+            return s.charAt(0).toUpperCase() + s.slice(1);
+        }
+
+        // Renderizado Catálogo Principal
+        function renderCatalog(data) {
+            const container = document.getElementById("gridContent");
+            container.innerHTML = "";
+
+            if (data.length === 0) {
+                container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 2rem;">No se encontraron registros.</p>`;
+                return;
+            }
+
+            data.forEach(item => {
+                const card = document.createElement("div");
+                card.className = "card";
+                card.innerHTML = `
+                    <div class="thumbnail-wrapper">
+                        <iframe src="https://www.youtube-nocookie.com/embed/${item.ytId}" title="${item.title}" allowfullscreen></iframe>
+                    </div>
+                    <div class="card-info">
+                        <div class="badge-container">
+                            <span class="badge ${getBadgeClass(item.type)}">${item.type}</span>
+                            <span class="badge badge-cat">${item.category}</span>
+                        </div>
+                        <h3 class="card-title">${item.artist} - ${item.title}</h3>
+                        <div class="card-meta">
+                            <span>📅 ${item.date}</span>
+                            <button class="vote-btn-sm" onclick="voteForTrack(${item.id})">🔥 ${item.votes}</button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function getBadgeClass(type) {
+            if (type === 'Debut') return 'badge-debut';
+            if (type === 'Comeback') return 'badge-comeback';
+            return 'badge-stage';
+        }
+
+        // Renderizado de Photocards & Instantcards
+        function renderPhotocards() {
+            const groupFilter = document.getElementById("photocardGroupFilter").value;
+            const typeFilter = document.getElementById("photocardTypeFilter").value;
+            const container = document.getElementById("photocardGrid");
+            container.innerHTML = "";
+
+            let filtered = photocardDatabase.filter(pc => {
+                const matchGroup = groupFilter === 'ALL' || pc.group === groupFilter;
+                const matchType = typeFilter === 'ALL' || pc.type === typeFilter;
+                return matchGroup && matchType;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 3rem;">No hay tarjetas registradas para esta selección.</p>`;
+                return;
+            }
+
+            filtered.forEach(pc => {
+                const item = document.createElement("div");
+                item.className = "photocard-item";
+                item.onclick = () => openPhotocardModal(pc);
+                item.innerHTML = `
+                    <div class="photocard-img-frame">
+                        <span class="photocard-tag">${pc.type}</span>
+                        <img src="${pc.img}" alt="${pc.title}" loading="lazy">
+                    </div>
+                    <div class="photocard-details">
+                        <div class="photocard-group">${pc.group}</div>
+                        <div class="photocard-title">${pc.title}</div>
+                        <div class="photocard-type">Edición Oficial 💎</div>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function openPhotocardModal(pc) {
+            document.getElementById("pcModalTitle").innerText = pc.title;
+            document.getElementById("pcModalSubtitle").innerText = `Grupo: ${pc.group} | Colección: ${pc.type}`;
+            document.getElementById("pcModalImg").src = pc.img;
+            document.getElementById("pcModalDownload").href = pc.img;
+            togglePhotocardModal(true);
+        }
+
+        function togglePhotocardModal(show) {
+            document.getElementById("photocardModal").style.display = show ? "flex" : "none";
+        }
+
+        // Renderizado de Wallpapers HD
+        function renderWallpapers() {
+            const groupFilter = document.getElementById("wallpaperGroupFilter").value;
+            const container = document.getElementById("wallpaperGrid");
+            container.innerHTML = "";
+
+            // Generar 10 wallpapers por grupo dinámicamente
+            const registeredGroups = [...new Set(catalogData.map(item => item.artist))];
+            let wallpapers = [];
+
+            registeredGroups.forEach(group => {
                 for (let i = 1; i <= 10; i++) {
-                    const seed = encodeURIComponent(`${artist}-${i}`);
-                    const imgUrl = `https://picsum.photos/seed/${seed}/800/1200`;
                     wallpapers.push({
-                        id: `wp-${artistIdx}-${i}`,
-                        artist: artist,
-                        title: `${artist} HD Wallpaper #${i}`,
-                        resolution: "4K UHD / Mobile",
-                        imgUrl: imgUrl,
-                        downloadUrl: `${MONETIZED_LINK_BASE}?wp=${encodeURIComponent(artist)}_${i}`
+                        group: group,
+                        title: `Wallpaper HD #0${i}`,
+                        resolution: i % 2 === 0 ? '4K Ultra HD (3840x2160)' : 'Mobile Vertical (1080x1920)',
+                        img: `https://images.unsplash.com/photo-${1517841905240 + (i * 1000)}?auto=format&fit=crop&w=800&q=80`
                     });
                 }
             });
-            return wallpapers;
-        }
 
-        function populateWallpaperSelect() {
-            const select = document.getElementById('wallpaperGroupFilter');
-            const uniqueArtists = [...new Set(archiveData.map(item => item.artist))];
-            select.innerHTML = '<option value="ALL">Todos los Grupos Registrados</option>';
-            uniqueArtists.forEach(artist => {
-                select.innerHTML += `<option value="${artist}">${artist}</option>`;
-            });
-        }
+            let filtered = groupFilter === 'ALL' ? wallpapers : wallpapers.filter(w => w.group === groupFilter);
 
-        function renderWallpapers() {
-            const grid = document.getElementById('wallpaperGrid');
-            const selectedArtist = document.getElementById('wallpaperGroupFilter').value;
-            const allWallpapers = generateWallpapers();
-
-            const filtered = selectedArtist === 'ALL' 
-                ? allWallpapers 
-                : allWallpapers.filter(w => w.artist === selectedArtist);
-
-            grid.innerHTML = '';
             filtered.forEach(wp => {
-                grid.innerHTML += `
-                    <div class="wallpaper-card">
-                        <div class="wallpaper-img-container">
-                            <img src="${wp.imgUrl}" alt="${wp.title}" loading="lazy">
+                const card = document.createElement("div");
+                card.className = "wallpaper-card";
+                card.innerHTML = `
+                    <div class="wallpaper-img-container">
+                        <img src="${wp.img}" alt="${wp.group}" loading="lazy">
+                    </div>
+                    <div class="wallpaper-info">
+                        <div style="font-size: 0.75rem; color: var(--accent-yellow); font-weight: bold; text-transform: uppercase;">${wp.group}</div>
+                        <div style="font-weight: 600; font-size: 0.95rem;">${wp.title}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">${wp.resolution}</div>
+                        <a href="${wp.img}" target="_blank" class="btn-download-monetized">📥 Descargar HD</a>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Renderizado de Fandom Zone & Encuestas
+        function renderFandomPolls() {
+            const videoPollList = document.getElementById("videoPollList");
+            videoPollList.innerHTML = "";
+
+            const topTracks = [...catalogData].sort((a, b) => b.votes - a.votes).slice(0, 5);
+            const totalVotes = topTracks.reduce((acc, curr) => acc + curr.votes, 0) || 1;
+
+            topTracks.forEach(track => {
+                const percentage = Math.round((track.votes / totalVotes) * 100);
+                videoPollList.innerHTML += `
+                    <div class="poll-item">
+                        <div class="poll-header">
+                            <span><strong>${track.artist}</strong> - ${track.title}</span>
+                            <span>${track.votes} votos (${percentage}%)</span>
                         </div>
-                        <div class="wallpaper-info">
-                            <div style="font-weight: bold; font-size: 0.95rem;">${wp.artist}</div>
-                            <div style="font-size: 0.75rem; color: var(--text-muted);">${wp.title} • ${wp.resolution}</div>
-                            <a href="${wp.downloadUrl}" target="_blank" rel="noopener noreferrer" class="btn-download-monetized">
-                                ⬇️ Descargar HD
-                            </a>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${percentage}%"></div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Idols y Grupos
+            const idolPollList = document.getElementById("idolPollList");
+            const idols = [
+                { name: "Wonho", group: "Solista", votes: 1240 },
+                { name: "Karina", group: "aespa", votes: 980 },
+                { name: "Jungkook", group: "BTS", votes: 1150 },
+                { name: "Felix", group: "Stray Kids", votes: 890 }
+            ];
+
+            idolPollList.innerHTML = "";
+            idols.forEach(idol => {
+                idolPollList.innerHTML += `
+                    <div class="poll-item">
+                        <div class="poll-header">
+                            <span><strong>${idol.name}</strong> (${idol.group})</span>
+                            <span>${idol.votes} Votos</span>
                         </div>
                     </div>
                 `;
             });
         }
 
-        function renderTiktokSection() {
-            const container = document.getElementById('tiktokGrid');
-            container.innerHTML = `
-                <div class="tiktok-card">
-                    <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@eduardgi07" data-unique-id="eduardgi07" data-embed-type="creator" style="max-width: 100%; min-width: 280px;">
-                        <section>
-                            <a target="_blank" href="https://www.tiktok.com/@eduardgi07?refer=creator_embed">@eduardgi07</a>
-                        </section>
-                    </blockquote>
-                </div>
-            `;
-            if (window.tiktokEmbed) {
-                window.tiktokEmbed.load();
-            }
-        }
+        // Renderizado de TikTok Section
+        function renderTikToks() {
+            const container = document.getElementById("tiktokGrid");
+            container.innerHTML = "";
 
-        function renderCards(data) {
-            const grid = document.getElementById('gridContent');
-            grid.innerHTML = '';
+            const tiktoks = [
+                { title: "Challenge K-Pop Dance 2024", id: "7320000000000000000" },
+                { title: "Album Unboxing & Photocard Pulls", id: "7321000000000000000" },
+                { title: "K-Pop Concert Vlog & Live Stage", id: "7322000000000000000" }
+            ];
 
-            document.getElementById('totalCount').innerText = data.length;
-            const totalVotes = archiveData.reduce((acc, curr) => acc + (curr.votes || 0), 0);
-            document.getElementById('totalVotesCount').innerText = totalVotes;
-
-            data.forEach(item => {
-                const year = new Date(item.date).getFullYear();
-                const badgeClass = item.type === 'Debut' ? 'badge-debut' : item.type === 'Comeback' ? 'badge-comeback' : 'badge-stage';
-
-                const cardHtml = `
-                    <div class="card">
-                        <div class="thumbnail-wrapper">
-                            <iframe src="https://www.youtube.com/embed/${item.ytId}" allowfullscreen loading="lazy"></iframe>
-                        </div>
-                        <div class="card-info">
-                            <div class="badge-container">
-                                <span class="badge ${badgeClass}">${item.type}</span>
-                                <span class="badge badge-cat">${item.category}</span>
-                                <span class="badge" style="background:rgba(255,255,255,0.1); color:#fff;">${year}</span>
-                            </div>
-                            <div class="card-title">${item.artist} - ${item.title}</div>
-                            <div class="card-meta">
-                                <span>📅 ${item.date}</span>
-                                <button class="vote-btn-sm" onclick="voteVideo(${item.id})">❤️ ${item.votes || 0}</button>
-                            </div>
+            tiktoks.forEach(tt => {
+                container.innerHTML += `
+                    <div class="tiktok-card">
+                        <div style="font-weight: bold; color: var(--accent-tiktok); font-size: 0.95rem;">🎬 ${tt.title}</div>
+                        <div style="background: var(--bg-primary); padding: 2rem; border-radius: 8px; text-align: center; color: var(--text-muted); font-size: 0.85rem; border: 1px dashed var(--border-color);">
+                            <p>Video de TikTok Embed (@eduardgi07)</p>
+                            <a href="https://www.tiktok.com/@eduardgi07" target="_blank" style="color: var(--accent-blue); text-decoration: none; font-weight: bold; margin-top: 0.5rem; display: inline-block;">Ver video en TikTok ↗</a>
                         </div>
                     </div>
                 `;
-                grid.innerHTML += cardHtml;
             });
         }
 
+        // Filtros combinados para el Catálogo
         function filterData() {
-            const search = document.getElementById('searchInput').value.toLowerCase();
-            const category = document.getElementById('categoryFilter').value;
-            const year = document.getElementById('yearFilter').value;
-            const type = document.getElementById('typeFilter').value;
+            const search = document.getElementById("searchInput").value.toLowerCase();
+            const category = document.getElementById("categoryFilter").value;
+            const year = document.getElementById("yearFilter").value;
+            const type = document.getElementById("typeFilter").value;
 
-            const filtered = archiveData.filter(item => {
-                const matchesSearch = item.artist.toLowerCase().includes(search) || item.title.toLowerCase().includes(search);
-                const matchesCategory = (category === 'ALL') || (item.category === category);
-                const itemYear = new Date(item.date).getFullYear().toString();
-                const matchesYear = (year === 'ALL') || (itemYear === year);
-                const matchesType = (type === 'ALL') || (item.type === type);
+            const filtered = catalogData.filter(item => {
+                const matchSearch = item.artist.toLowerCase().includes(search) || item.title.toLowerCase().includes(search);
+                const matchCategory = category === 'ALL' || item.category === category;
+                const matchYear = year === 'ALL' || item.date.startsWith(year);
+                const matchType = type === 'ALL' || item.type === type;
 
-                return matchesSearch && matchesCategory && matchesYear && matchesType;
+                return matchSearch && matchCategory && matchYear && matchType;
             });
 
-            renderCards(filtered);
+            renderCatalog(filtered);
         }
 
-        function voteVideo(id) {
-            const item = archiveData.find(x => x.id === id);
+        // Sistema de Votación
+        function voteForTrack(id) {
+            const item = catalogData.find(x => x.id === id);
             if (item) {
-                item.votes = (item.votes || 0) + 1;
-                saveData();
-                filterData();
+                item.votes += 1;
+                saveAndRefresh();
             }
         }
 
-        function renderFandomZone() {
-            const sortedVideos = [...archiveData].sort((a, b) => (b.votes || 0) - (a.votes || 0)).slice(0, 5);
-            const videoPollContainer = document.getElementById('videoPollList');
-            videoPollContainer.innerHTML = '';
-            const maxVideoVotes = sortedVideos[0]?.votes || 1;
-
-            sortedVideos.forEach((v, index) => {
-                const pct = Math.round(((v.votes || 0) / maxVideoVotes) * 100);
-                videoPollContainer.innerHTML += `
-                    <div class="poll-item">
-                        <div class="poll-header">
-                            <strong>#${index + 1} ${v.artist} - ${v.title}</strong>
-                            <span>${v.votes || 0} votos</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: ${pct}%;"></div>
-                        </div>
-                        <button class="vote-btn-sm" onclick="voteVideo(${v.id}); renderFandomZone();">Votar por esta canción</button>
-                    </div>
-                `;
-            });
-
-            const sortedIdols = [...idolPollData].sort((a, b) => b.votes - a.votes);
-            const idolPollContainer = document.getElementById('idolPollList');
-            idolPollContainer.innerHTML = '';
-            const maxIdolVotes = sortedIdols[0]?.votes || 1;
-
-            sortedIdols.forEach((i, index) => {
-                const pct = Math.round((i.votes / maxIdolVotes) * 100);
-                idolPollContainer.innerHTML += `
-                    <div class="poll-item">
-                        <div class="poll-header">
-                            <strong>#${index + 1} ${i.name}</strong>
-                            <span>${i.votes} votos</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: ${pct}%;"></div>
-                        </div>
-                        <button class="vote-btn-sm" onclick="voteIdol('${i.name}')">Votar por ${i.name}</button>
-                    </div>
-                `;
-            });
+        function updateHeaderStats() {
+            document.getElementById("totalCount").innerText = catalogData.length;
+            const totalVotes = catalogData.reduce((sum, item) => sum + item.votes, 0);
+            document.getElementById("totalVotesCount").innerText = totalVotes;
         }
 
-        function voteIdol(name) {
-            const idol = idolPollData.find(x => x.name === name);
-            if (idol) {
-                idol.votes += 1;
-                saveData();
-                renderFandomZone();
-            }
+        function saveAndRefresh() {
+            localStorage.setItem('kpop_hub_data', JSON.stringify(catalogData));
+            populateGroupFilters();
+            filterData();
+            renderFandomPolls();
+            renderPhotocards();
+            renderWallpapers();
+            updateHeaderStats();
         }
 
-        function addCustomIdolPrompt() {
-            const name = prompt("Escribe el nombre del Idol o Grupo:");
-            if (name && name.trim() !== '') {
-                const exists = idolPollData.find(x => x.name.toLowerCase() === name.trim().toLowerCase());
-                if (!exists) {
-                    idolPollData.push({ name: name.trim(), votes: 1 });
-                    saveData();
-                    renderFandomZone();
-                } else {
-                    alert("¡Este artista ya está en la lista!");
-                }
-            }
-        }
-
+        // Modales y Formulario
         function toggleModal(show) {
-            document.getElementById('addModal').style.display = show ? 'flex' : 'none';
+            document.getElementById("addModal").style.display = show ? "flex" : "none";
         }
 
         function addEntry(e) {
             e.preventDefault();
             const newEntry = {
                 id: Date.now(),
-                artist: document.getElementById('artistInput').value,
-                title: document.getElementById('titleInput').value,
-                category: document.getElementById('categoryInput').value,
-                type: document.getElementById('typeInput').value,
-                date: document.getElementById('dateInput').value,
-                ytId: document.getElementById('ytIdInput').value,
+                artist: document.getElementById("artistInput").value,
+                title: document.getElementById("titleInput").value,
+                category: document.getElementById("categoryInput").value,
+                type: document.getElementById("typeInput").value,
+                date: document.getElementById("dateInput").value,
+                ytId: document.getElementById("ytIdInput").value,
                 votes: 1
             };
 
-            archiveData.unshift(newEntry);
-            saveData();
-            filterData();
+            catalogData.unshift(newEntry);
+            saveAndRefresh();
             toggleModal(false);
-            document.getElementById('kpopForm').reset();
+            document.getElementById("kpopForm").reset();
+        }
+
+        function addCustomIdolPrompt() {
+            const idol = prompt("Ingresa el nombre del Idol o Grupo que deseas proponer:");
+            if (idol) {
+                alert(`¡Gracias por tu propuesta! "${idol}" ha sido registrado para la próxima ronda de votaciones.`);
+            }
         }
 
         function exportData() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(archiveData));
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(catalogData));
             const downloadAnchor = document.createElement('a');
             downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", "kpop_archive_backup.json");
+            downloadAnchor.setAttribute("download", "kpop_hub_backup.json");
             document.body.appendChild(downloadAnchor);
             downloadAnchor.click();
             downloadAnchor.remove();
         }
-
-        filterData();
     </script>
 </body>
 </html>
